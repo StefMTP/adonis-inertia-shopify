@@ -1,0 +1,10 @@
+- Clone the repo
+- Install all dependencies with `npm install` and `yarn install`
+- Create a Shopify public app and note down the **app handle**, the **API key** and **API secret**
+- Make a **redirect URI** that will serve the application (for example with ngrok)
+- Fill an `.env` file with all the necessary credentials, as shown on the `.env.example`
+- Install **redis** and run `redis-server` on a terminal
+- Make sure to have **mysql** installed with an empty database
+- Run `node ace migration:run` to create the **shops** table
+- Run `npm run dev` to run the **development server** as well as the **Webpack Encore server**
+- Install the Shopify app on your development store
