@@ -2,8 +2,8 @@
   "assets/app.css": "http://localhost:8080/assets/app.css",
   "assets/app.js": "http://localhost:8080/assets/app.js",
   "assets/resources_js_Pages_Home_tsx.js": "http://localhost:8080/assets/resources_js_Pages_Home_tsx.js",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-84a370.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-84a370.css",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-84a370.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-84a370.js",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-0b87d2.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-0b87d2.css",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-0b87d2.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-0b87d2.js"
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-cb866b.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-cb866b.css",
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-cb866b.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-cb866b.js",
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-4f93a5.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-4f93a5.css",
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-4f93a5.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-4f93a5.js"
 }
