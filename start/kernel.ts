@@ -43,4 +43,5 @@ Server.middleware.registerNamed({
   verifyState: () => import("App/Middleware/VerifyState"),
   verifyRegEx: () => import("App/Middleware/VerifyRegEx"),
   verifyWebhooksHmac: () => import("App/Middleware/VerifyWebhooksHmac"),
+  verifySessionToken: () => import("App/Middleware/VerifySessionToken"),
 });
