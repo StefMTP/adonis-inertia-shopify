@@ -26,6 +26,11 @@ Route.get("/auth/callback", "ShopifyAppController.auth_callback").middleware([
   "verifyRegEx",
   "verifyState",
 ]);
+Route.get("/credentials", "ShopifyAppController.credentials");
 Route.post("/uninstall", "ShopifyAppController.uninstall").middleware(
   "verifyWebhooksHmac"
+);
+
+Route.get("/shop/products", "ProductsController.index").middleware(
+  "verifySessionToken"
 );

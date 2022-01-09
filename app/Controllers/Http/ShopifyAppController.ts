@@ -36,7 +36,10 @@ export default class ShopifyAppController {
           "Content-Security-Policy",
           `frame-ancestors 'self' https://${shop.shopifyDomain}`
         );
-        return inertia.render("Home");
+        return inertia.render("Home", {
+          redirectUri: Env.get("REDIRECT_URI"),
+          shop: shop.shopifyDomain,
+        });
       }
       // save the scopes and the state value for the next step of the OAuth
       const initialScopes: string = "read_products";
@@ -168,6 +171,37 @@ export default class ShopifyAppController {
       return response.status(200).json({});
     } catch (err) {
       return response.status(400).json({ message: err });
+    }
+  }
+
+  public async credentials({ request, response }: HttpContextContract) {
+    try {
+      if (!request.qs().shop) {
+        throw new Error(
+          "ShopifyAppController.credentials: missing shop from request query"
+        );
+      }
+      const shop = await Shop.findBy("shopifyDomain", request.qs().shop);
+      if (
+        !shop ||
+        !shop.isInstalled ||
+        !shop.accessToken ||
+        shop.accessToken === ""
+      ) {
+        throw new Error(
+          "ShopifyAppController.credentials: shop not found in database"
+        );
+      }
+      const credentials = {
+        apiKey: Env.get("API_KEY"),
+        host: shop.host,
+      };
+      return response.status(200).json(credentials);
+    } catch (err) {
+      console.log(err);
+      return response.status(500).json({
+        message: err,
+      });
     }
   }
 }
