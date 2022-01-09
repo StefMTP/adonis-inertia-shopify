@@ -1,15 +1,21 @@
 import React from "react";
-import translations from "@shopify/polaris/locales/en.json";
-import { AppProvider, Frame } from "@shopify/polaris";
 import "@shopify/polaris/build/esm/styles.css";
+import { AppProvider, Frame } from "@shopify/polaris";
 import AppTabs from "../Components/AppTabs";
+import AppCredentialsProvider from "../Contexts/AppCredentialsContext";
+import translations from "@shopify/polaris/locales/en.json";
+import ProductsProvider from "../Contexts/ProductsContext";
 
-const Home = () => {
+const Home = ({ shop, redirectUri }) => {
   return (
     <AppProvider i18n={translations}>
-      <Frame>
-        <AppTabs />
-      </Frame>
+      <AppCredentialsProvider shop={shop} redirectUri={redirectUri}>
+        <ProductsProvider redirectUri={redirectUri}>
+          <Frame>
+            <AppTabs />
+          </Frame>
+        </ProductsProvider>
+      </AppCredentialsProvider>
     </AppProvider>
   );
 };
