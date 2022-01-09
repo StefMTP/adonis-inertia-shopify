@@ -36,7 +36,7 @@ export default class ShopifyAppController {
           "Content-Security-Policy",
           `frame-ancestors 'self' https://${shop.shopifyDomain}`
         );
-        return inertia.render("Test");
+        return inertia.render("Home");
       }
       // save the scopes and the state value for the next step of the OAuth
       const initialScopes: string = "read_products";

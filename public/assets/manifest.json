@@ -1,4 +1,14 @@
 {
   "assets/app.css": "http://localhost:8080/assets/app.css",
-  "assets/app.js": "http://localhost:8080/assets/app.js"
+  "assets/app.js": "http://localhost:8080/assets/app.js",
+  "assets/resources_js_Pages_Home_tsx.js": "http://localhost:8080/assets/resources_js_Pages_Home_tsx.js",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_styles_css.css": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_styles_css.css",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-d2fc25.css": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-d2fc25.css",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-d2fc25.js": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-d2fc25.js",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-f58880.css": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-f58880.css",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-f58880.js": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-f58880.js",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-7b0e31.css": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-7b0e31.css",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-7b0e31.js": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-7b0e31.js",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-877422.css": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-877422.css",
+  "assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-877422.js": "http://localhost:8080/assets/vendors-node_modules_shopify_polaris_build_esm_components_AppProvider_AppProvider_js-node_mod-877422.js"
 }

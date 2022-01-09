@@ -1,6 +1,6 @@
-import { InertiaApp } from "@inertiajs/inertia-react";
 import React from "react";
 import { render } from "react-dom";
+import { InertiaApp } from "@inertiajs/inertia-react";
 import "../css/app.css";
 
 const el = document.getElementById("app");
