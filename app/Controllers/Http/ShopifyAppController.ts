@@ -26,12 +26,7 @@ export default class ShopifyAppController {
       // if it exists, then serve the application
       // if it doesn't (or is not installed / doesn't have an access token), then start the OAuth and installation
       const shop = await getDatabaseShop(requestQuery.shop);
-      if (
-        shop &&
-        shop.isInstalled &&
-        shop.accessToken &&
-        shop.accessToken !== ""
-      ) {
+      if (shop && !shop.isNotProperlyInstalled) {
         response.header(
           "Content-Security-Policy",
           `frame-ancestors 'self' https://${shop.shopifyDomain}`
@@ -73,12 +68,7 @@ export default class ShopifyAppController {
       }
       // continue with the process if indeed the shop is not installed
       let shop = await getDatabaseShop(requestQuery.shop);
-      if (
-        !shop ||
-        !shop.isInstalled ||
-        !shop.accessToken ||
-        shop.accessToken === ""
-      ) {
+      if (!shop || shop.isNotProperlyInstalled) {
         // send a request to Shopify server for an API access token
         const accessToken = await getAccessToken(
           requestQuery.shop,
@@ -182,12 +172,7 @@ export default class ShopifyAppController {
         );
       }
       const shop = await Shop.findBy("shopifyDomain", request.qs().shop);
-      if (
-        !shop ||
-        !shop.isInstalled ||
-        !shop.accessToken ||
-        shop.accessToken === ""
-      ) {
+      if (!shop || shop.isNotProperlyInstalled) {
         throw new Error(
           "ShopifyAppController.credentials: shop not found in database"
         );

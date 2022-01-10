@@ -5,6 +5,7 @@ import {
   BaseModel,
   beforeSave,
   column,
+  computed,
 } from "@ioc:Adonis/Lucid/Orm";
 import Encryption from "@ioc:Adonis/Core/Encryption";
 
@@ -55,5 +56,10 @@ export default class Shop extends BaseModel {
   @afterFind()
   public static decryptToken(shop: Shop) {
     shop.accessToken = Encryption.decrypt(shop.accessToken) || "";
+  }
+
+  @computed()
+  public get isNotProperlyInstalled() {
+    return !this.isInstalled || !this.accessToken || this.accessToken === "";
   }
 }

@@ -6,12 +6,7 @@ export default class ProductsController {
   public async index({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
     try {
-      if (
-        !shop ||
-        !shop.isInstalled ||
-        !shop.accessToken ||
-        shop.accessToken === ""
-      ) {
+      if (!shop || shop.isNotProperlyInstalled) {
         throw new Error("Shop doesn't exist or isn't installed");
       }
       const client = new Shopify.Clients.Rest(
