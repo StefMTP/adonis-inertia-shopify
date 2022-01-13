@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { Card, Page, Tabs } from "@shopify/polaris";
-import Products from "./Products";
-import Settings from "./Settings";
+import Products from "../Tabs/Products";
+import Settings from "../Tabs/Settings";
 
 const AppTabs = () => {
   const [selectedTab, setSelectedTab] = useState(0);
