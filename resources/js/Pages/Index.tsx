@@ -6,7 +6,7 @@ import AppCredentialsProvider from "../Contexts/AppCredentialsContext";
 import translations from "@shopify/polaris/locales/en.json";
 import ProductsProvider from "../Contexts/ProductsContext";
 
-const Home = ({ shop, redirectUri }) => {
+const Index = ({ shop, redirectUri }) => {
   return (
     <AppProvider i18n={translations}>
       <AppCredentialsProvider shop={shop} redirectUri={redirectUri}>
@@ -20,4 +20,4 @@ const Home = ({ shop, redirectUri }) => {
   );
 };
 
-export default Home;
+export default Index;

@@ -31,7 +31,7 @@ export default class ShopifyAppController {
           "Content-Security-Policy",
           `frame-ancestors 'self' https://${shop.shopifyDomain}`
         );
-        return inertia.render("Home", {
+        return inertia.render("Index", {
           redirectUri: Env.get("REDIRECT_URI"),
           shop: shop.shopifyDomain,
         });

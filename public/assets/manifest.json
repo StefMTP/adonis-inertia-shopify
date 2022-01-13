@@ -2,10 +2,7 @@
   "assets/app.css": "http://localhost:8080/assets/app.css",
   "assets/app.js": "http://localhost:8080/assets/app.js",
   "assets/resources_js_Pages_Home_tsx.js": "http://localhost:8080/assets/resources_js_Pages_Home_tsx.js",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-4f93a5.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-4f93a5.css",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-4f93a5.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-4f93a5.js",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-da65e1.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-da65e1.css",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-da65e1.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-da65e1.js",
   "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-92326c.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-92326c.css",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-92326c.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-92326c.js"
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-92326c.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-92326c.js",
+  "assets/resources_js_Pages_Index_tsx.js": "http://localhost:8080/assets/resources_js_Pages_Index_tsx.js"
 }
