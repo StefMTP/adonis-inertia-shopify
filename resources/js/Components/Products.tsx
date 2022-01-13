@@ -1,28 +1,37 @@
 import {
+  Avatar,
   Badge,
   Caption,
-  List,
   ResourceItem,
   ResourceList,
   Stack,
   TextStyle,
+  Thumbnail,
 } from "@shopify/polaris";
+import { ProductsMajor } from "@shopify/polaris-icons";
 import { useContext } from "react";
 import { ProductsContext } from "../Contexts/ProductsContext";
 
 const Products = () => {
-  const { products } = useContext(ProductsContext);
-  if (!products) return <p>Loading products...</p>;
+  const { products, productsLoading } = useContext(ProductsContext);
+  // if (!products || products.length <= 0) return <p>Loading products...</p>;
   return (
     <ResourceList
+      loading={productsLoading}
       resourceName={{ singular: "product", plural: "products" }}
       items={products}
       renderItem={(product) => {
         const { id, title, image, body_html, product_type, created_at } =
           product;
-
+        const media = (
+          <Thumbnail
+            source={image ? image.src : ProductsMajor}
+            alt={title}
+            size="medium"
+          />
+        );
         return (
-          <ResourceItem id={`${id}`} media={image} onClick={() => {}}>
+          <ResourceItem id={`${id}`} media={media} onClick={() => {}}>
             <Stack>
               <h3>
                 <TextStyle variation="strong">{title}</TextStyle>
@@ -37,11 +46,6 @@ const Products = () => {
         );
       }}
     />
-    // <List>
-    //   {products.map((product) => (
-    //     <List.Item key={product.id}>{product.title}</List.Item>
-    //   ))}
-    // </List>
   );
 };
 

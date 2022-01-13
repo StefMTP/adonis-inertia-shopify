@@ -1,5 +1,5 @@
 import { ClientApplication, createApp } from "@shopify/app-bridge";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { getAppCredentials } from "../Helpers/actions";
 
 type AppCredentialsContextProviderProps = {

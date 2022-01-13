@@ -1,4 +1,3 @@
-import { ClientApplication, createApp } from "@shopify/app-bridge";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getProducts } from "../Helpers/actions";
 import { AppCredentialsContext } from "./AppCredentialsContext";
@@ -75,12 +74,16 @@ export type product = {
 
 type ProductsContextType = {
   products: product[];
+  productsLoading: boolean;
   setProducts: React.Dispatch<React.SetStateAction<product[]>>;
+  setProductsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const productsDefaultValue: ProductsContextType = {
   products: [],
+  productsLoading: false,
   setProducts: () => {},
+  setProductsLoading: () => {},
 };
 
 export const ProductsContext = createContext(productsDefaultValue);
@@ -90,20 +93,27 @@ const ProductsProvider = ({
   redirectUri,
 }: ProductsContextProviderProps) => {
   const [products, setProducts] = useState(productsDefaultValue.products);
+  const [productsLoading, setProductsLoading] = useState(
+    productsDefaultValue.productsLoading
+  );
 
   const { appCredentials } = useContext(AppCredentialsContext);
   const appBridgeClient = appCredentials.app;
 
   useEffect(() => {
     if (appBridgeClient) {
+      setProductsLoading(true);
       getProducts(redirectUri, appBridgeClient).then((res) => {
         setProducts(res.data.products);
+        setProductsLoading(false);
       });
     }
   }, [appBridgeClient]);
 
   return (
-    <ProductsContext.Provider value={{ products, setProducts }}>
+    <ProductsContext.Provider
+      value={{ products, setProducts, productsLoading, setProductsLoading }}
+    >
       {children}
     </ProductsContext.Provider>
   );
