@@ -34,3 +34,6 @@ Route.post("/uninstall", "ShopifyAppController.uninstall").middleware(
 Route.get("/shop/products", "ProductsController.index").middleware(
   "verifySessionToken"
 );
+Route.post("/shop/products/addTag", "ProductsController.addTag").middleware(
+  "verifySessionToken"
+);

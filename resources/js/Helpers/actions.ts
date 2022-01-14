@@ -2,6 +2,7 @@ import axios from "axios";
 import { ClientApplication } from "@shopify/app-bridge";
 import { getSessionToken } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
+import { product } from "../Contexts/ProductsContext";
 
 export const getAppCredentials = async (redirectUri: string, shop: string) => {
   const res = await axios.get(`${redirectUri}/credentials?shop=${shop}`);
@@ -30,5 +31,23 @@ export const getProducts = async (
   if (res.data.redirect) {
     Redirect.create(app).dispatch(Redirect.Action.REMOTE, res.data.redirect);
   }
+  return res;
+};
+
+export const addTagToProduct = async (
+  redirectUri: string,
+  app: ClientApplication<any>,
+  product: product,
+  tagInput: string
+) => {
+  const sessionToken = await getSessionToken(app);
+  const res = await axios.post(
+    `${redirectUri}/shop/products/addTag`,
+    {
+      id: product.id,
+      tag: `${product.tags},${tagInput}`,
+    },
+    { headers: { Authorization: `Bearer ${sessionToken}` } }
+  );
   return res;
 };
