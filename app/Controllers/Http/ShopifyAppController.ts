@@ -37,7 +37,7 @@ export default class ShopifyAppController {
         });
       }
       // save the scopes and the state value for the next step of the OAuth
-      const initialScopes: string = "read_products";
+      const initialScopes: string = "read_products,write_products";
       const state: string = nanoid();
       const cache: Cache = {
         scopes: initialScopes,
