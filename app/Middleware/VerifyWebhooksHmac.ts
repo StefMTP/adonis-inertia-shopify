@@ -8,7 +8,6 @@ export default class VerifyWebhooksHmac {
     next: () => Promise<void>
   ) {
     try {
-      console.log("inside uninstall middleware");
       const rawBody: string | null = request.raw();
       if (!rawBody) {
         throw new Error("VerifyWebhooksHmac.handle: missing raw body");

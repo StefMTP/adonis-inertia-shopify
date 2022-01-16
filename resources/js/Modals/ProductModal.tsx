@@ -107,7 +107,6 @@ const ProductModal = ({ product }: { product: product }) => {
                         product,
                         tagInput
                       ).then((res) => {
-                        console.log(res.data);
                         getProducts(
                           redirectUri,
                           appCredentials.app,

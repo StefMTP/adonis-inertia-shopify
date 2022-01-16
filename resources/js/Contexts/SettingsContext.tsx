@@ -26,7 +26,6 @@ const SettingsProvider = ({
 
   useEffect(() => {
     getDefaultSettings(redirectUri).then((res) => {
-      console.log(res.data);
       setPageLimit(res.data.pageLimit);
     });
   }, []);
