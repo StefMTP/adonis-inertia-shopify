@@ -1,4 +1,3 @@
-import { getSessionToken } from "@shopify/app-bridge-utils";
 import {
   Button,
   Layout,

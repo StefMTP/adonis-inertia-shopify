@@ -11,11 +11,12 @@ import {
   Thumbnail,
 } from "@shopify/polaris";
 import { ProductsMajor } from "@shopify/polaris-icons";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
 import { getProducts } from "../Helpers/actions";
+import BulkAddTagModal from "../Modals/BulkAddTagModal";
 import ProductModal from "../Modals/ProductModal";
 
 const Products = () => {
@@ -36,16 +37,27 @@ const Products = () => {
   } = useContext(ProductsContext);
 
   const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [bulkAddModalActive, setBulkAddModalActive] = useState(false);
   const promotedBulkActions = [
     {
       content: "Bulk add tags",
-      onAction: () => console.log({ selectedItems }),
+      onAction: () => {
+        setBulkAddModalActive(true);
+        console.log({ selectedItems, selectedProducts });
+      },
     },
   ];
   const handleSelectionChange = useCallback(
     (value) => setSelectedItems(value),
-    []
+    [selectedItems]
   );
+
+  useEffect(() => {
+    setSelectedProducts(
+      products.filter((product) => selectedItems.includes(+product.id))
+    );
+  }, [selectedItems]);
 
   const getProductPage = (page: any, increment: number) => {
     setProductsLoading(true);
@@ -138,6 +150,11 @@ const Products = () => {
         }}
       />
       {paginationMarkup}
+      <BulkAddTagModal
+        selectedProducts={selectedProducts}
+        active={bulkAddModalActive}
+        toggleActive={setBulkAddModalActive}
+      />
     </Card.Subsection>
   );
 };
