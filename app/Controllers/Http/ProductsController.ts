@@ -29,10 +29,10 @@ export default class ProductsController {
     }
   }
 
-  public async addTag({ request, response }: HttpContextContract) {
+  public async editTag({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
     const productId = request.body().id;
-    const tagInput = request.body().tag;
+    const tagInput = request.body().tags;
     try {
       if (!shop || shop.isNotProperlyInstalled) {
         throw new Error("Shop doesn't exist or isn't installed");

@@ -46,10 +46,31 @@ export const addTagToProduct = async (
 ) => {
   const sessionToken = await getSessionToken(app);
   const res = await axios.post(
-    `${redirectUri}/shop/products/addTag`,
+    `${redirectUri}/shop/products/editTag`,
     {
       id: product.id,
-      tag: `${product.tags},${tagInput}`,
+      tags: `${product.tags},${tagInput}`,
+    },
+    { headers: { Authorization: `Bearer ${sessionToken}` } }
+  );
+  return res;
+};
+
+export const deleteTagFromProduct = async (
+  redirectUri: string,
+  app: ClientApplication<any>,
+  product: product,
+  tagToDelete: string
+) => {
+  const sessionToken = await getSessionToken(app);
+  const tagsRemaining = product.tags
+    .split(", ")
+    .filter((tag) => tag !== tagToDelete);
+  const res = await axios.post(
+    `${redirectUri}/shop/products/editTag`,
+    {
+      id: product.id,
+      tags: tagsRemaining,
     },
     { headers: { Authorization: `Bearer ${sessionToken}` } }
   );
