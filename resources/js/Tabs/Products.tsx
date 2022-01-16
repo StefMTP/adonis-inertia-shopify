@@ -117,7 +117,11 @@ const Products = () => {
             />
           );
           return (
-            <ResourceItem id={id} media={media} onClick={() => {}}>
+            <ResourceItem
+              id={id}
+              media={media}
+              onClick={() => setSelectedItems([...selectedItems, id])}
+            >
               <Stack alignment="center">
                 <h3>
                   <TextStyle variation="strong">{title}</TextStyle>
