@@ -36,6 +36,10 @@ Route.get("/settings", "ShopifyAppController.settings");
 Route.get("/shop/products", "ProductsController.index").middleware(
   "verifySessionToken"
 );
+Route.get(
+  "/shop/products/count",
+  "ProductsController.productsCount"
+).middleware("verifySessionToken");
 Route.post("/shop/products/editTag", "ProductsController.editTag").middleware(
   "verifySessionToken"
 );

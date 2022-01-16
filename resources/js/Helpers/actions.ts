@@ -44,6 +44,22 @@ export const getProducts = async (
   return res;
 };
 
+export const getProductsCount = async (
+  redirectUri: string,
+  app: ClientApplication<any>
+) => {
+  const sessionToken = await getSessionToken(app);
+  const res = await axios.get(`${redirectUri}/shop/products/count`, {
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+  if (res.data.redirect) {
+    Redirect.create(app).dispatch(Redirect.Action.REMOTE, res.data.redirect);
+  }
+  return res;
+};
+
 export const addTagToProduct = async (
   redirectUri: string,
   app: ClientApplication<any>,

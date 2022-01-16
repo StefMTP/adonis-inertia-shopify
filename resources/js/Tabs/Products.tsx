@@ -27,6 +27,7 @@ const Products = () => {
     nextPage,
     prevPage,
     pageNumber,
+    productsCount,
     setProducts,
     setProductsLoading,
     setNextPage,
@@ -98,6 +99,7 @@ const Products = () => {
             </EmptyState>
           )
         }
+        totalItemsCount={productsCount}
         selectedItems={selectedItems}
         onSelectionChange={handleSelectionChange}
         promotedBulkActions={promotedBulkActions}
