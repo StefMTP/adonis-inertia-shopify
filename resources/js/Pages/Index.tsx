@@ -5,16 +5,19 @@ import AppTabs from "../Components/AppTabs";
 import AppCredentialsProvider from "../Contexts/AppCredentialsContext";
 import translations from "@shopify/polaris/locales/en.json";
 import ProductsProvider from "../Contexts/ProductsContext";
+import SettingsProvider from "../Contexts/SettingsContext";
 
 const Index = ({ shop, redirectUri }) => {
   return (
     <AppProvider i18n={translations}>
       <AppCredentialsProvider shop={shop} redirectUri={redirectUri}>
-        <ProductsProvider redirectUri={redirectUri}>
-          <Frame>
-            <AppTabs />
-          </Frame>
-        </ProductsProvider>
+        <SettingsProvider redirectUri={redirectUri}>
+          <ProductsProvider redirectUri={redirectUri}>
+            <Frame>
+              <AppTabs />
+            </Frame>
+          </ProductsProvider>
+        </SettingsProvider>
       </AppCredentialsProvider>
     </AppProvider>
   );

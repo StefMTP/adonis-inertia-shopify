@@ -9,16 +9,22 @@ export const getAppCredentials = async (redirectUri: string, shop: string) => {
   return res;
 };
 
+export const getDefaultSettings = async (redirectUri: string) => {
+  const res = await axios.get(`${redirectUri}/settings`);
+  return res;
+};
+
 export const getProducts = async (
   redirectUri: string,
   app: ClientApplication<any>,
+  pageLimit: number,
   pageQuery?: string
   // appliedFilters?: { key: string; value: string }[]
 ) => {
   const sessionToken = await getSessionToken(app);
-  let link = `${redirectUri}/shop/products`;
+  let link = `${redirectUri}/shop/products?page_limit=${pageLimit}`;
   if (pageQuery) {
-    link += "?page_query=" + pageQuery;
+    link += "&page_query=" + pageQuery;
   }
   // if (appliedFilters && appliedFilters.length > 0) {
   //   link += "?";

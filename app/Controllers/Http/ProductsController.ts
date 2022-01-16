@@ -1,11 +1,11 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import Env from "@ioc:Adonis/Core/Env";
 import Shop from "App/Models/Shop";
 import Shopify, { DataType } from "@shopify/shopify-api";
 
 export default class ProductsController {
   public async index({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
+    const pageLimit = request.qs().page_limit;
     const pageQuery = request.qs().page_query
       ? JSON.parse(request.qs().page_query)
       : undefined;
@@ -19,7 +19,7 @@ export default class ProductsController {
       );
       const params = pageQuery || {
         path: "products",
-        query: { published_status: "any", limit: Env.get("PAGE_LIMIT") },
+        query: { published_status: "any", limit: pageLimit },
       };
       const res = await client.get(params);
       return response.status(200).json(res);

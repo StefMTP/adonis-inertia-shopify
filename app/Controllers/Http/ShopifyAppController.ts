@@ -189,4 +189,15 @@ export default class ShopifyAppController {
       });
     }
   }
+
+  public async settings({ response }: HttpContextContract) {
+    try {
+      return response.status(200).json({ pageLimit: Env.get("PAGE_LIMIT") });
+    } catch (err) {
+      console.log(err);
+      return response.status(500).json({
+        message: err,
+      });
+    }
+  }
 }

@@ -2,6 +2,7 @@ import {
   Avatar,
   Badge,
   Caption,
+  Card,
   EmptyState,
   Pagination,
   ResourceItem,
@@ -14,11 +15,13 @@ import { ProductsMajor } from "@shopify/polaris-icons";
 import { useContext } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
+import { SettingsContext } from "../Contexts/SettingsContext";
 import { getProducts } from "../Helpers/actions";
 import ProductModal from "../Modals/ProductModal";
 
 const Products = () => {
   const { redirectUri, appCredentials } = useContext(AppCredentialsContext);
+  const { pageLimit } = useContext(SettingsContext);
   const {
     products,
     productsLoading,
@@ -34,27 +37,41 @@ const Products = () => {
 
   const getProductPage = (page: any, increment: number) => {
     setProductsLoading(true);
-    getProducts(redirectUri, appCredentials.app, JSON.stringify(page)).then(
-      (res) => {
-        setProducts(res.data.body.products);
-        try {
-          setPrevPage(res.data.pageInfo.prevPage);
-        } catch (e) {
-          setPrevPage(false);
-        }
-        try {
-          setNextPage(res.data.pageInfo.nextPage);
-        } catch (e) {
-          setNextPage(false);
-        }
-        setPageNumber((currentNumber) => currentNumber + increment);
-        setProductsLoading(false);
+    getProducts(
+      redirectUri,
+      appCredentials.app,
+      pageLimit,
+      JSON.stringify(page)
+    ).then((res) => {
+      setProducts(res.data.body.products);
+      try {
+        setPrevPage(res.data.pageInfo.prevPage);
+      } catch (e) {
+        setPrevPage(false);
       }
-    );
+      try {
+        setNextPage(res.data.pageInfo.nextPage);
+      } catch (e) {
+        setNextPage(false);
+      }
+      setPageNumber((currentNumber) => currentNumber + increment);
+      setProductsLoading(false);
+    });
   };
 
+  const paginationMarkup = (
+    <Pagination
+      hasNext={!!nextPage && !productsLoading}
+      hasPrevious={!!prevPage && !productsLoading}
+      label={`Page ${pageNumber}`}
+      onNext={() => getProductPage(nextPage, +1)}
+      onPrevious={() => getProductPage(prevPage, -1)}
+    />
+  );
+
   return (
-    <>
+    <Card.Subsection>
+      {paginationMarkup}
       <ResourceList
         emptyState={
           !products.length && (
@@ -100,14 +117,8 @@ const Products = () => {
           );
         }}
       />
-      <Pagination
-        hasNext={!!nextPage && !productsLoading}
-        hasPrevious={!!prevPage && !productsLoading}
-        label={`Page ${pageNumber}`}
-        onNext={() => getProductPage(nextPage, +1)}
-        onPrevious={() => getProductPage(prevPage, -1)}
-      />
-    </>
+      {paginationMarkup}
+    </Card.Subsection>
   );
 };
 

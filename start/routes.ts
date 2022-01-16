@@ -31,6 +31,8 @@ Route.post("/uninstall", "ShopifyAppController.uninstall").middleware(
   "verifyWebhooksHmac"
 );
 
+Route.get("/settings", "ShopifyAppController.settings");
+
 Route.get("/shop/products", "ProductsController.index").middleware(
   "verifySessionToken"
 );

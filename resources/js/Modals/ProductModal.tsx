@@ -12,6 +12,7 @@ import {
 import { useCallback, useContext, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { product, ProductsContext } from "../Contexts/ProductsContext";
+import { SettingsContext } from "../Contexts/SettingsContext";
 import {
   addTagToProduct,
   deleteTagFromProduct,
@@ -26,6 +27,7 @@ const ProductModal = ({ product }: { product: product }) => {
   const [isToastActive, setIsToastActive] = useState(false);
 
   const { appCredentials, redirectUri } = useContext(AppCredentialsContext);
+  const { pageLimit } = useContext(SettingsContext);
   const { setProducts } = useContext(ProductsContext);
 
   const handleClick = useCallback(() => setActive(!active), [active]);
@@ -64,14 +66,16 @@ const ProductModal = ({ product }: { product: product }) => {
                           product,
                           tag
                         ).then(() => {
-                          getProducts(redirectUri, appCredentials.app).then(
-                            (res) => {
-                              setProducts(res.data.body.products);
-                              setEditingTagInProgress(false);
-                              setToastMessage("Product tag removed");
-                              toggleIsToastActive();
-                            }
-                          );
+                          getProducts(
+                            redirectUri,
+                            appCredentials.app,
+                            pageLimit
+                          ).then((res) => {
+                            setProducts(res.data.body.products);
+                            setEditingTagInProgress(false);
+                            setToastMessage("Product tag removed");
+                            toggleIsToastActive();
+                          });
                         });
                       }}
                     >
@@ -80,7 +84,7 @@ const ProductModal = ({ product }: { product: product }) => {
                   ))}
                 </Stack>
               ) : (
-                "No tags found"
+                <TextStyle variation="subdued">No tags found</TextStyle>
               )}
             </Layout.Section>
             <Layout.Section>
@@ -104,15 +108,17 @@ const ProductModal = ({ product }: { product: product }) => {
                         tagInput
                       ).then((res) => {
                         console.log(res.data);
-                        getProducts(redirectUri, appCredentials.app).then(
-                          (res) => {
-                            setProducts(res.data.products);
-                            setTagInput("");
-                            setEditingTagInProgress(false);
-                            setToastMessage("Product tag added");
-                            toggleIsToastActive();
-                          }
-                        );
+                        getProducts(
+                          redirectUri,
+                          appCredentials.app,
+                          pageLimit
+                        ).then((res) => {
+                          setProducts(res.data.body.products);
+                          setTagInput("");
+                          setEditingTagInProgress(false);
+                          setToastMessage("Product tag added");
+                          toggleIsToastActive();
+                        });
                       });
                     }}
                   >

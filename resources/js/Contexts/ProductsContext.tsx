@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getProducts } from "../Helpers/actions";
 import { AppCredentialsContext } from "./AppCredentialsContext";
+import { SettingsContext } from "./SettingsContext";
 
 type ProductsContextProviderProps = {
   children: React.ReactNode;
@@ -114,11 +115,12 @@ const ProductsProvider = ({
 
   const { appCredentials } = useContext(AppCredentialsContext);
   const appBridgeClient = appCredentials.app;
+  const { pageLimit } = useContext(SettingsContext);
 
   useEffect(() => {
     if (appBridgeClient) {
       setProductsLoading(true);
-      getProducts(redirectUri, appBridgeClient).then((res) => {
+      getProducts(redirectUri, appBridgeClient, pageLimit).then((res) => {
         try {
           setPrevPage(res.data.pageInfo.prevPage);
         } catch (e) {
