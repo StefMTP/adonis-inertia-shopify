@@ -37,4 +37,5 @@ export default Env.rules({
   API_SECRET: Env.schema.string(),
   REDIRECT_URI: Env.schema.string(),
   APP_HANDLE: Env.schema.string(),
+  PAGE_LIMIT: Env.schema.string(),
 });

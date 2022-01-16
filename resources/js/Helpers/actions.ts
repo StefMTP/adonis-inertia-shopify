@@ -12,17 +12,21 @@ export const getAppCredentials = async (redirectUri: string, shop: string) => {
 export const getProducts = async (
   redirectUri: string,
   app: ClientApplication<any>,
-  appliedFilters?: { key: string; value: string }[]
+  pageQuery?: string
+  // appliedFilters?: { key: string; value: string }[]
 ) => {
   const sessionToken = await getSessionToken(app);
   let link = `${redirectUri}/shop/products`;
-  if (appliedFilters && appliedFilters.length > 0) {
-    link += "?";
-    for (const filter of appliedFilters) {
-      link += `${filter.key}=${filter.value}`;
-    }
-    link = link.slice(0, -1);
+  if (pageQuery) {
+    link += "?page_query=" + pageQuery;
   }
+  // if (appliedFilters && appliedFilters.length > 0) {
+  //   link += "?";
+  //   for (const filter of appliedFilters) {
+  //     link += `${filter.key}=${filter.value}`;
+  //   }
+  //   link = link.slice(0, -1);
+  // }
   const res = await axios.get(link, {
     headers: {
       Authorization: `Bearer ${sessionToken}`,

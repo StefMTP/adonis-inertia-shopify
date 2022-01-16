@@ -75,15 +75,27 @@ export type product = {
 type ProductsContextType = {
   products: product[];
   productsLoading: boolean;
+  prevPage: any;
+  nextPage: any;
+  pageNumber: number;
   setProducts: React.Dispatch<React.SetStateAction<product[]>>;
   setProductsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setPrevPage: React.Dispatch<React.SetStateAction<any>>;
+  setNextPage: React.Dispatch<React.SetStateAction<any>>;
+  setPageNumber: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const productsDefaultValue: ProductsContextType = {
   products: [],
   productsLoading: false,
+  prevPage: "",
+  nextPage: "",
+  pageNumber: 1,
   setProducts: () => {},
   setProductsLoading: () => {},
+  setPrevPage: () => {},
+  setNextPage: () => {},
+  setPageNumber: () => {},
 };
 
 export const ProductsContext = createContext(productsDefaultValue);
@@ -96,6 +108,9 @@ const ProductsProvider = ({
   const [productsLoading, setProductsLoading] = useState(
     productsDefaultValue.productsLoading
   );
+  const [nextPage, setNextPage] = useState(productsDefaultValue.nextPage);
+  const [prevPage, setPrevPage] = useState(productsDefaultValue.prevPage);
+  const [pageNumber, setPageNumber] = useState(productsDefaultValue.pageNumber);
 
   const { appCredentials } = useContext(AppCredentialsContext);
   const appBridgeClient = appCredentials.app;
@@ -104,7 +119,17 @@ const ProductsProvider = ({
     if (appBridgeClient) {
       setProductsLoading(true);
       getProducts(redirectUri, appBridgeClient).then((res) => {
-        setProducts(res.data.products);
+        try {
+          setPrevPage(res.data.pageInfo.prevPage);
+        } catch (e) {
+          setPrevPage(false);
+        }
+        try {
+          setNextPage(res.data.pageInfo.nextPage);
+        } catch (e) {
+          setNextPage(false);
+        }
+        setProducts(res.data.body.products);
         setProductsLoading(false);
       });
     }
@@ -112,7 +137,18 @@ const ProductsProvider = ({
 
   return (
     <ProductsContext.Provider
-      value={{ products, setProducts, productsLoading, setProductsLoading }}
+      value={{
+        products,
+        productsLoading,
+        nextPage,
+        prevPage,
+        pageNumber,
+        setProducts,
+        setProductsLoading,
+        setNextPage,
+        setPrevPage,
+        setPageNumber,
+      }}
     >
       {children}
     </ProductsContext.Provider>

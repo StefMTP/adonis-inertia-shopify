@@ -3,6 +3,7 @@ import {
   Badge,
   Caption,
   EmptyState,
+  Pagination,
   ResourceItem,
   ResourceList,
   Stack,
@@ -10,15 +11,47 @@ import {
   Thumbnail,
 } from "@shopify/polaris";
 import { ProductsMajor } from "@shopify/polaris-icons";
-import { useContext, useState } from "react";
-import { product, ProductsContext } from "../Contexts/ProductsContext";
+import { useContext } from "react";
+import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
+import { ProductsContext } from "../Contexts/ProductsContext";
+import { getProducts } from "../Helpers/actions";
 import ProductModal from "../Modals/ProductModal";
 
 const Products = () => {
-  const { products, productsLoading } = useContext(ProductsContext);
-  // const [selectedProduct, setSelectedProduct] = useState<product>(
-  //   {} as product
-  // );
+  const { redirectUri, appCredentials } = useContext(AppCredentialsContext);
+  const {
+    products,
+    productsLoading,
+    nextPage,
+    prevPage,
+    pageNumber,
+    setProducts,
+    setProductsLoading,
+    setNextPage,
+    setPrevPage,
+    setPageNumber,
+  } = useContext(ProductsContext);
+
+  const getProductPage = (page: any, increment: number) => {
+    setProductsLoading(true);
+    getProducts(redirectUri, appCredentials.app, JSON.stringify(page)).then(
+      (res) => {
+        setProducts(res.data.body.products);
+        try {
+          setPrevPage(res.data.pageInfo.prevPage);
+        } catch (e) {
+          setPrevPage(false);
+        }
+        try {
+          setNextPage(res.data.pageInfo.nextPage);
+        } catch (e) {
+          setNextPage(false);
+        }
+        setPageNumber((currentNumber) => currentNumber + increment);
+        setProductsLoading(false);
+      }
+    );
+  };
 
   return (
     <>
@@ -66,6 +99,13 @@ const Products = () => {
             </ResourceItem>
           );
         }}
+      />
+      <Pagination
+        hasNext={!!nextPage && !productsLoading}
+        hasPrevious={!!prevPage && !productsLoading}
+        label={`Page ${pageNumber}`}
+        onNext={() => getProductPage(nextPage, +1)}
+        onPrevious={() => getProductPage(prevPage, -1)}
       />
     </>
   );
