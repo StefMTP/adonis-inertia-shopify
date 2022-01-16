@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Badge,
   Caption,
   Card,
@@ -12,7 +11,7 @@ import {
   Thumbnail,
 } from "@shopify/polaris";
 import { ProductsMajor } from "@shopify/polaris-icons";
-import { useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
@@ -34,6 +33,18 @@ const Products = () => {
     setPrevPage,
     setPageNumber,
   } = useContext(ProductsContext);
+
+  const [selectedItems, setSelectedItems] = useState([]);
+  const promotedBulkActions = [
+    {
+      content: "Bulk add tags",
+      onAction: () => console.log({ selectedItems }),
+    },
+  ];
+  const handleSelectionChange = useCallback(
+    (value) => setSelectedItems(value),
+    []
+  );
 
   const getProductPage = (page: any, increment: number) => {
     setProductsLoading(true);
@@ -87,6 +98,9 @@ const Products = () => {
             </EmptyState>
           )
         }
+        selectedItems={selectedItems}
+        onSelectionChange={handleSelectionChange}
+        promotedBulkActions={promotedBulkActions}
         loading={productsLoading}
         resourceName={{ singular: "product", plural: "products" }}
         items={products}
@@ -101,7 +115,7 @@ const Products = () => {
             />
           );
           return (
-            <ResourceItem id={`${id}`} media={media} onClick={() => {}}>
+            <ResourceItem id={id} media={media} onClick={() => {}}>
               <Stack alignment="center">
                 <h3>
                   <TextStyle variation="strong">{title}</TextStyle>

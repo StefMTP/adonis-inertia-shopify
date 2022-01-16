@@ -9,7 +9,7 @@ type ProductsContextProviderProps = {
 };
 
 export type variant = {
-  id: number;
+  id: string;
   sku: string;
   grams: number;
   price: number;
@@ -53,7 +53,7 @@ export type image = {
 };
 
 export type product = {
-  id: number;
+  id: string;
   title: string;
   body_html: string;
   vendor: string;
