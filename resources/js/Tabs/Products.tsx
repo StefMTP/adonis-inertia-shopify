@@ -1,8 +1,12 @@
 import {
   Badge,
+  Button,
   Caption,
   Card,
+  ChoiceList,
   EmptyState,
+  Filters,
+  Layout,
   Pagination,
   ResourceItem,
   ResourceList,
@@ -16,6 +20,7 @@ import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
 import { getProducts } from "../Helpers/actions";
+import { disambiguateLabel, isEmpty } from "../Helpers/functions";
 import BulkAddTagModal from "../Modals/BulkAddTagModal";
 import ProductModal from "../Modals/ProductModal";
 
@@ -39,6 +44,28 @@ const Products = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [bulkAddModalActive, setBulkAddModalActive] = useState(false);
+
+  const [productType, setProductType] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [queryValue, setQueryValue] = useState(null);
+  const handleProductTypeChange = useCallback(
+    (value) => setProductType(value),
+    []
+  );
+  const handleStatusChange = useCallback((value) => setStatus(value), []);
+  const handleFiltersQueryChange = useCallback(
+    (value) => setQueryValue(value),
+    []
+  );
+  const handleProductTypeRemove = useCallback(() => setProductType(null), []);
+  const handleStatusRemove = useCallback(() => setStatus(null), []);
+  const handleQueryValueRemove = useCallback(() => setQueryValue(null), []);
+  const handleFiltersClearAll = useCallback(() => {
+    handleProductTypeRemove();
+    handleStatusRemove();
+    handleQueryValueRemove();
+  }, [handleProductTypeRemove, handleStatusRemove, handleQueryValueRemove]);
+
   const promotedBulkActions = [
     {
       content: "Bulk add tags",
@@ -58,6 +85,38 @@ const Products = () => {
       products.filter((product) => selectedItems.includes(+product.id))
     );
   }, [selectedItems]);
+
+  const refreshProducts = () => {
+    setProductsLoading(true);
+    const queryFilters = [];
+    if (!isEmpty(productType)) {
+      queryFilters.push({ key: "productType", value: productType });
+    }
+    if (!isEmpty(status)) {
+      queryFilters.push({ key: "status", value: status });
+    }
+    getProducts(
+      redirectUri,
+      appCredentials.app,
+      pageLimit,
+      undefined,
+      queryFilters
+    ).then((res) => {
+      try {
+        setPrevPage(res.data.pageInfo.prevPage);
+      } catch (e) {
+        setPrevPage(false);
+      }
+      try {
+        setNextPage(res.data.pageInfo.nextPage);
+      } catch (e) {
+        setNextPage(false);
+      }
+      setProducts(res.data.body.products);
+      setPageNumber(1);
+      setProductsLoading(false);
+    });
+  };
 
   const getProductPage = (page: any, increment: number) => {
     setProductsLoading(true);
@@ -93,9 +152,78 @@ const Products = () => {
     />
   );
 
+  const filters = [
+    {
+      key: "status",
+      label: "Status",
+      filter: (
+        <ChoiceList
+          title="Status"
+          titleHidden
+          choices={[
+            { label: "Active", value: "active" },
+            { label: "Draft", value: "draft" },
+            { label: "Archived", value: "archived" },
+          ]}
+          selected={status || []}
+          onChange={handleStatusChange}
+        />
+      ),
+      shortcut: true,
+    },
+    {
+      key: "productType",
+      label: "Product Type",
+      filter: (
+        <ChoiceList
+          title="Product type"
+          titleHidden
+          choices={[
+            { label: "Decoration", value: "decoration" },
+            { label: "Apparel", value: "apparel" },
+            { label: "Accessories", value: "accessories" },
+          ]}
+          selected={productType || []}
+          onChange={handleProductTypeChange}
+          allowMultiple
+        />
+      ),
+      shortcut: true,
+    },
+  ];
+
+  const appliedFilters = [];
+  if (!isEmpty(productType)) {
+    const key = "productType";
+    appliedFilters.push({
+      key,
+      label: disambiguateLabel(key, productType),
+      onRemove: handleProductTypeRemove,
+    });
+  }
+  if (!isEmpty(status)) {
+    const key = "status";
+    appliedFilters.push({
+      key,
+      label: disambiguateLabel(key, status),
+      onRemove: handleStatusRemove,
+    });
+  }
+
   return (
     <Card.Subsection>
       {paginationMarkup}
+      <Filters
+        filters={filters}
+        queryValue={queryValue}
+        appliedFilters={appliedFilters}
+        onQueryChange={handleFiltersQueryChange}
+        onQueryClear={handleQueryValueRemove}
+        onClearAll={handleFiltersClearAll}
+      />
+      <Button primary onClick={() => refreshProducts()}>
+        Refresh products
+      </Button>
       <ResourceList
         emptyState={
           !products.length && (

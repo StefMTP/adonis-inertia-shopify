@@ -18,21 +18,19 @@ export const getProducts = async (
   redirectUri: string,
   app: ClientApplication<any>,
   pageLimit: number,
-  pageQuery?: string
-  // appliedFilters?: { key: string; value: string }[]
+  pageQuery?: string,
+  queryFilters?: { key: string; value: string }[]
 ) => {
   const sessionToken = await getSessionToken(app);
   let link = `${redirectUri}/shop/products?page_limit=${pageLimit}`;
   if (pageQuery) {
     link += "&page_query=" + pageQuery;
   }
-  // if (appliedFilters && appliedFilters.length > 0) {
-  //   link += "?";
-  //   for (const filter of appliedFilters) {
-  //     link += `${filter.key}=${filter.value}`;
-  //   }
-  //   link = link.slice(0, -1);
-  // }
+  if (queryFilters && queryFilters.length > 0) {
+    for (const filter of queryFilters) {
+      link += `&${filter.key}=${filter.value}`;
+    }
+  }
   const res = await axios.get(link, {
     headers: {
       Authorization: `Bearer ${sessionToken}`,

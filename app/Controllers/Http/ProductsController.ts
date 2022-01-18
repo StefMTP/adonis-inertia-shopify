@@ -9,6 +9,7 @@ export default class ProductsController {
     const pageQuery = request.qs().page_query
       ? JSON.parse(request.qs().page_query)
       : undefined;
+    const { productType, status } = request.qs();
     try {
       if (!shop || shop.isNotProperlyInstalled) {
         throw new Error("Shop doesn't exist or isn't installed");
@@ -19,7 +20,12 @@ export default class ProductsController {
       );
       const params = pageQuery || {
         path: "products",
-        query: { published_status: "any", limit: pageLimit },
+        query: {
+          limit: pageLimit,
+          published_status: "any",
+          product_type: productType,
+          status: status,
+        },
       };
       const res = await client.get(params);
       return response.status(200).json(res);
