@@ -40,6 +40,10 @@ Route.get(
   "/shop/products/count",
   "ProductsController.productsCount"
 ).middleware("verifySessionToken");
+Route.get(
+  "/shop/products/tags",
+  "ProductsController.allShopProductTags"
+).middleware("verifySessionToken");
 Route.post("/shop/products/editTag", "ProductsController.editTag").middleware(
   "verifySessionToken"
 );

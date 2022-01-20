@@ -50,6 +50,31 @@ export default class ProductsController {
     }
   }
 
+  public async allShopProductTags({ request, response }: HttpContextContract) {
+    const shop: Shop = request.body().shop;
+    try {
+      const client = new Shopify.Clients.Graphql(
+        shop.shopifyDomain,
+        shop.accessToken
+      );
+      const res = await client.query({
+        data: `{
+          shop {
+            productTags (first: 250) {
+              edges {
+                  node
+              }
+            }
+          }
+        }`,
+      });
+      return response.status(200).json(res);
+    } catch (err) {
+      console.log(err.message || err);
+      return response.status(500).json({ message: err.message || err });
+    }
+  }
+
   public async editTag({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
     const productId = request.body().id;

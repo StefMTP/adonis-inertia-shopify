@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getProducts, getProductsCount } from "../Helpers/actions";
+import {
+  getAllShopProductTags,
+  getProducts,
+  getProductsCount,
+} from "../Helpers/actions";
 import { AppCredentialsContext } from "./AppCredentialsContext";
 import { SettingsContext } from "./SettingsContext";
 
@@ -80,12 +84,14 @@ type ProductsContextType = {
   nextPage: any;
   pageNumber: number;
   productsCount: number;
+  productsTags: [];
   setProducts: React.Dispatch<React.SetStateAction<product[]>>;
   setProductsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setPrevPage: React.Dispatch<React.SetStateAction<any>>;
   setNextPage: React.Dispatch<React.SetStateAction<any>>;
   setPageNumber: React.Dispatch<React.SetStateAction<number>>;
   setProductsCount: React.Dispatch<React.SetStateAction<number>>;
+  setProductsTags: React.Dispatch<React.SetStateAction<[]>>;
 };
 
 const productsDefaultValue: ProductsContextType = {
@@ -95,12 +101,14 @@ const productsDefaultValue: ProductsContextType = {
   nextPage: "",
   pageNumber: 1,
   productsCount: 0,
+  productsTags: [],
   setProducts: () => {},
   setProductsLoading: () => {},
   setPrevPage: () => {},
   setNextPage: () => {},
   setPageNumber: () => {},
   setProductsCount: () => {},
+  setProductsTags: () => {},
 };
 
 export const ProductsContext = createContext(productsDefaultValue);
@@ -119,6 +127,9 @@ const ProductsProvider = ({
   const [productsCount, setProductsCount] = useState(
     productsDefaultValue.productsCount
   );
+  const [productsTags, setProductsTags] = useState(
+    productsDefaultValue.productsTags
+  );
 
   const { appCredentials } = useContext(AppCredentialsContext);
   const appBridgeClient = appCredentials.app;
@@ -129,6 +140,10 @@ const ProductsProvider = ({
       setProductsLoading(true);
       getProductsCount(redirectUri, appBridgeClient).then((res) => {
         setProductsCount(res.data.body.count);
+      });
+      getAllShopProductTags(redirectUri, appBridgeClient).then((res) => {
+        console.log(res.data.body.data.shop.productTags.edges);
+        setProductsTags(res.data.body.data.shop.productTags.edges);
       });
       getProducts(redirectUri, appBridgeClient, pageLimit).then((res) => {
         try {
@@ -156,12 +171,14 @@ const ProductsProvider = ({
         prevPage,
         pageNumber,
         productsCount,
+        productsTags,
         setProducts,
         setProductsLoading,
         setNextPage,
         setPrevPage,
         setPageNumber,
         setProductsCount,
+        setProductsTags,
       }}
     >
       {children}
