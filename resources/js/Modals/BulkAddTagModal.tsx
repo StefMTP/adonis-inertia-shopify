@@ -97,7 +97,7 @@ const BulkAddTagModal = ({
                     });
                   }}
                 >
-                  Add tag to all products
+                  Add tag to products
                 </Button>
               }
             />
@@ -106,7 +106,7 @@ const BulkAddTagModal = ({
             <Layout.Section>
               <TextStyle variation="positive">
                 Tag {tagInput} added to {succeededTagEdits}/
-                {selectedProducts.length}
+                {selectedProducts.length} selected products
               </TextStyle>
             </Layout.Section>
           )}
