@@ -23,6 +23,7 @@ const ProductModal = ({ product }: { product: product }) => {
   const [tagInput, setTagInput] = useState("");
   const [editingTagInProgress, setEditingTagInProgress] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [toastError, setToastError] = useState(false);
   const [isToastActive, setIsToastActive] = useState(false);
 
   const { appCredentials, redirectUri } = useContext(AppCredentialsContext);
@@ -106,17 +107,28 @@ const ProductModal = ({ product }: { product: product }) => {
                         product,
                         tagInput
                       ).then((res) => {
-                        getProducts(
-                          redirectUri,
-                          appCredentials.app,
-                          pageLimit
-                        ).then((res) => {
-                          setProducts(res.data.body.products);
+                        if (
+                          res.message &&
+                          res.message === "Tag already exists on product"
+                        ) {
                           setTagInput("");
+                          setToastError(true);
                           setEditingTagInProgress(false);
-                          setToastMessage("Product tag added");
+                          setToastMessage(res.message);
                           toggleIsToastActive();
-                        });
+                        } else {
+                          getProducts(
+                            redirectUri,
+                            appCredentials.app,
+                            pageLimit
+                          ).then((res) => {
+                            setProducts(res.data.body.products);
+                            setTagInput("");
+                            setEditingTagInProgress(false);
+                            setToastMessage("Product tag added");
+                            toggleIsToastActive();
+                          });
+                        }
                       });
                     }}
                   >
@@ -130,6 +142,7 @@ const ProductModal = ({ product }: { product: product }) => {
       </Modal>
       {isToastActive ? (
         <Toast
+          error={toastError}
           content={toastMessage}
           onDismiss={toggleIsToastActive}
           duration={4000}

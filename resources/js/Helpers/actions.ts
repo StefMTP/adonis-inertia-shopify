@@ -63,8 +63,12 @@ export const addTagToProduct = async (
   app: ClientApplication<any>,
   product: product,
   tagInput: string
-) => {
+): Promise<any> => {
   const sessionToken = await getSessionToken(app);
+  if (product.tags.includes(tagInput)) {
+    const res = { message: "Tag already exists on product" };
+    return res;
+  }
   const res = await axios.post(
     `${redirectUri}/shop/products/editTag`,
     {
