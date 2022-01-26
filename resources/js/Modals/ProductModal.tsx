@@ -8,7 +8,7 @@ import {
   TextStyle,
   Toast,
 } from "@shopify/polaris";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { product, ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";

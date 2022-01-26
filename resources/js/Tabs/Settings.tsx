@@ -1,5 +1,5 @@
 import { Button, Card, Layout, Select } from "@shopify/polaris";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";

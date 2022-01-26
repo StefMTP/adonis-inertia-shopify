@@ -6,7 +6,6 @@ import {
   ChoiceList,
   EmptyState,
   Filters,
-  Layout,
   Pagination,
   ResourceItem,
   ResourceList,
@@ -15,7 +14,7 @@ import {
   Thumbnail,
 } from "@shopify/polaris";
 import { ProductsMajor } from "@shopify/polaris-icons";
-import { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";

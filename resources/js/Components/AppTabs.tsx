@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Card, Page, Tabs } from "@shopify/polaris";
 import Products from "../Tabs/Products";
 import Settings from "../Tabs/Settings";
