@@ -1,7 +1,6 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { getDatabaseShop } from "App/Helpers/DatabaseHelpers";
 import Env from "@ioc:Adonis/Core/Env";
-import { Cache, setCache, getCache } from "App/Helpers/Cache";
 import { nanoid } from "nanoid";
 import {
   createOrUpdateWebhook,
@@ -13,7 +12,12 @@ import Shop from "App/Models/Shop";
 import Shopify from "@shopify/shopify-api";
 
 export default class ShopifyAppController {
-  public async app({ request, response, inertia }: HttpContextContract) {
+  public async app({
+    request,
+    response,
+    session,
+    inertia,
+  }: HttpContextContract) {
     try {
       const requestQuery = request.qs();
       if (!requestQuery) {
@@ -38,11 +42,11 @@ export default class ShopifyAppController {
       // save the scopes and the state value for the next step of the OAuth
       const initialScopes: string = "read_products,write_products";
       const state: string = nanoid();
-      const cache: Cache = {
+      const cache = {
         scopes: initialScopes,
         state: state,
       };
-      await setCache(requestQuery.shop, cache);
+      session.put(requestQuery.shop, cache);
       // send a redirect to the authorization URL
       return response.redirect(
         `https://${requestQuery.shop}/admin/oauth/authorize?client_id=${Env.get(
@@ -57,7 +61,11 @@ export default class ShopifyAppController {
     }
   }
 
-  public async auth_callback({ request, response }: HttpContextContract) {
+  public async auth_callback({
+    request,
+    response,
+    session,
+  }: HttpContextContract) {
     try {
       const requestQuery = request.qs();
       if (!requestQuery || !requestQuery.shop || !requestQuery.state) {
@@ -98,9 +106,9 @@ export default class ShopifyAppController {
           }
         );
         // update cache
-        const cache = await getCache(shop.shopifyDomain);
-        const newScopes = await getScopes(shop.shopifyDomain, accessToken);
-        await setCache(shop.shopifyDomain, { ...cache, scopes: newScopes });
+        const cache = session.get(shop.shopifyDomain);
+        const newScopes = await getScopes(requestQuery.shop, accessToken);
+        session.put(shop.shopifyDomain, { ...cache, scopes: newScopes });
         // OAuth and installation is done, redirect the user to the application
         return response.redirect(
           `https://${shop.shopifyDomain}/admin/apps/${Env.get("APP_HANDLE")}`

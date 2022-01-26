@@ -1,9 +1,8 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import { Cache, getCache } from "App/Helpers/Cache";
 
 export default class VerifyState {
   public async handle(
-    { request, response }: HttpContextContract,
+    { request, response, session }: HttpContextContract,
     next: () => Promise<void>
   ) {
     try {
@@ -11,7 +10,7 @@ export default class VerifyState {
       if (!requestQuery.state || !requestQuery.shop) {
         throw new Error("VerifyState.handle: query has no state or shop");
       }
-      const cache: Cache = await getCache(requestQuery.shop);
+      const cache = session.get(requestQuery.shop);
       if (requestQuery.state !== cache.state) {
         throw new Error("VerifyState.handle: state is wrong");
       }
