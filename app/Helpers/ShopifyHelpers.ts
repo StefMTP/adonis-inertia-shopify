@@ -1,5 +1,19 @@
 import axios from "axios";
-import Env from "@ioc:Adonis/Core/Env";
+import { RestClient } from "@shopify/shopify-api/dist/clients/rest";
+import { DataType } from "@shopify/shopify-api";
+
+export type shop = {
+  name: string;
+  email: string;
+  shop_owner: string;
+};
+
+export type webhook = {
+  id: number;
+  topic: string;
+  address: string;
+  format: string;
+};
 
 export const getScopes = async (
   shopShopifyDomain: string,
@@ -66,27 +80,16 @@ export const getAccessToken = async (
   }
 };
 
-export const getShop = async (
-  shopShopifyDomain: string,
-  shopAccessToken: string,
-  apiVersion: string
-) => {
+export const getShop = async (client: RestClient): Promise<shop> => {
   try {
-    if (!shopShopifyDomain || !shopAccessToken || !apiVersion) {
+    if (!client) {
       throw new Error("ShopifyHelpers.getShop: missing necessary parameters");
     }
-    const res: any = await axios.get(
-      `https://${shopShopifyDomain}/admin/api/${apiVersion}/shop.json`,
-      {
-        headers: {
-          "X-Shopify-Access-Token": shopAccessToken,
-        },
-      }
-    );
+    const res: any = await client.get({ path: "shop" });
     if (!res) {
       throw new Error("ShopifyHelpers.getShop: axios request failed");
     }
-    const shop: any = res.data.shop;
+    const shop: any = res.body.shop;
     if (!shop) {
       throw new Error(
         "Shopifyhelpers.getShop: this shop doesn't exist in shopify"
@@ -100,29 +103,21 @@ export const getShop = async (
 };
 
 export const hasWebhook = async (
-  shopShopifyDomain: string,
-  accessToken: string,
-  apiVersion: string
-) => {
+  topic: string,
+  client: RestClient
+): Promise<webhook | false> => {
   try {
-    if (!shopShopifyDomain || !accessToken || !apiVersion) {
+    if (!topic || !client) {
       throw new Error(
         "ShopifyHelpers.hasWebhook: missing necessary parameters"
       );
     }
-    const res = await axios.get(
-      `https://${shopShopifyDomain}/admin/api/${apiVersion}/webhooks.json`,
-      {
-        headers: {
-          "X-Shopify-Access-Token": accessToken,
-        },
-      }
-    );
+    const res: any = await client.get({ path: "webhooks" });
     if (!res) {
-      throw new Error("ShopifyHelpers.getWebhooks: axios request failed");
+      throw new Error("ShopifyHelpers.hasWebhook: request failed");
     }
-    for (const webhook of res.data.webhooks) {
-      if (webhook.topic === "app/uninstalled") {
+    for (const webhook of res.body.webhooks) {
+      if (webhook.topic === topic) {
         return webhook;
       }
     }
@@ -134,85 +129,88 @@ export const hasWebhook = async (
 };
 
 export const postWebhook = async (
-  shopShopifyDomain: string,
-  accessToken: string,
-  apiVersion: string
-) => {
+  path: string,
+  topic: string,
+  client: RestClient
+): Promise<webhook> => {
   try {
-    if (!shopShopifyDomain || !accessToken || !apiVersion) {
+    if (!path || !topic || !client) {
       throw new Error(
-        "ShopifyHelpers.hasWebhook: missing necessary parameters"
+        "ShopifyHelpers.postWebhook: missing necessary parameters"
       );
     }
-    const res = await axios.post(
-      `https://${shopShopifyDomain}/admin/api/${apiVersion}/webhooks.json`,
-      {
-        webhook: {
-          topic: "app/uninstalled",
-          address: `${Env.get("REDIRECT_URI")}/uninstall`,
-          format: "json",
-        },
-      },
-      {
-        headers: {
-          "X-Shopify-Access-Token": accessToken,
-        },
-      }
-    );
+    const res: any = await client.post({
+      path: "webhooks",
+      data: { webhook: { topic, address: path, format: "json" } },
+      type: DataType.JSON,
+    });
     if (!res) {
       throw new Error("ShopifyHelpers.postWebhook: axios request failed");
     }
-    const webhook: any = res.data.webhook;
-    if (!webhook) {
-      throw new Error("ShopifyHelpers.postWebhook: response without webhook");
-    }
-    return webhook;
-  } catch (err) {}
-};
-
-export const updateWebhookPath = async (
-  shopShopifyDomain: string,
-  accessToken: string,
-  apiVersion: string,
-  webhookId: number,
-  path: string
-) => {
-  try {
-    if (
-      !shopShopifyDomain ||
-      !accessToken ||
-      !apiVersion ||
-      !webhookId ||
-      !path
-    ) {
-      throw new Error(
-        "ShopifyHelpers.updateWebhookPath: missing necessary parameters"
-      );
-    }
-    const res: any = await axios.put(
-      `https://${shopShopifyDomain}/admin/api/${apiVersion}/webhooks/${webhookId}.json`,
-      {
-        webhook: {
-          id: webhookId,
-          address: `${path}`,
-        },
-      },
-      {
-        headers: {
-          "X-Shopify-Access-Token": accessToken,
-        },
-      }
-    );
-    if (!res) {
-      throw new Error("ShopifyHelpers.postWebhook: axios request failed");
-    }
-    const webhook: any = res.data.webhook;
+    const webhook: webhook = res.body.webhook;
     if (!webhook) {
       throw new Error("ShopifyHelpers.postWebhook: response without webhook");
     }
     return webhook;
   } catch (err) {
+    console.info(err.message || err);
+    throw err;
+  }
+};
+
+export const updateWebhookPath = async (
+  webhookId: number,
+  path: string,
+  client: RestClient
+): Promise<webhook> => {
+  try {
+    if (!client || !webhookId || !path) {
+      throw new Error(
+        "ShopifyHelpers.updateWebhookPath: missing necessary parameters"
+      );
+    }
+    const res: any = await client.put({
+      path: `webhooks/${webhookId}`,
+      data: { webhook: { id: webhookId, address: `${path}` } },
+      type: DataType.JSON,
+    });
+    if (!res) {
+      throw new Error("ShopifyHelpers.updateWebhookPath: axios request failed");
+    }
+    const webhook: webhook = res.body.webhook;
+    if (!webhook) {
+      throw new Error(
+        "ShopifyHelpers.updateWebhookPath: response without webhook"
+      );
+    }
+    return webhook;
+  } catch (err) {
     console.info(err);
     throw err;
+  }
+};
+
+export const createOrUpdateWebhook = async (
+  path: string,
+  topic: string,
+  client: RestClient
+): Promise<void> => {
+  const webhookFound = await hasWebhook(topic, client);
+  if (!webhookFound) {
+    const webhook = await postWebhook(path, topic, client);
+    if (!webhook) {
+      throw new Error(
+        "ShopifyHelpers.createOrUpdateWebhook: something went wrong with webhook subscription, topic: " +
+          topic
+      );
+    }
+  } else if (webhookFound && webhookFound.address !== path) {
+    const webhook = await updateWebhookPath(webhookFound.id, path, client);
+    if (!webhook) {
+      throw new Error(
+        "ShopifyHelpers.createOrUpdateWebhook: something went wrong with webhook update, topic: " +
+          topic
+      );
+    }
   }
 };

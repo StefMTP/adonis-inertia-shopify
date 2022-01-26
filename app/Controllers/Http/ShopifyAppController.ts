@@ -4,14 +4,13 @@ import Env from "@ioc:Adonis/Core/Env";
 import { Cache, setCache, getCache } from "App/Helpers/Cache";
 import { nanoid } from "nanoid";
 import {
+  createOrUpdateWebhook,
   getAccessToken,
   getScopes,
   getShop,
-  hasWebhook,
-  postWebhook,
-  updateWebhookPath,
 } from "App/Helpers/ShopifyHelpers";
 import Shop from "App/Models/Shop";
+import Shopify from "@shopify/shopify-api";
 
 export default class ShopifyAppController {
   public async app({ request, response, inertia }: HttpContextContract) {
@@ -78,43 +77,14 @@ export default class ShopifyAppController {
         );
         // check if there are uninstall webhooks already set up, if not create them or update their address if it is incorrect
         // * the uninstall webhook will fire a post request that we can handle to set a shop as uninstalled
-        const path = `${Env.get("REDIRECT_URI")}/uninstall`;
-        const uninstallWebhook = await hasWebhook(
-          requestQuery.shop,
-          accessToken,
-          Env.get("API_VERSION")
+        const client = new Shopify.Clients.Rest(requestQuery.shop, accessToken);
+        await createOrUpdateWebhook(
+          `${Env.get("REDIRECT_URI")}/uninstall`,
+          "app/uninstalled",
+          client
         );
-        if (!uninstallWebhook) {
-          const webhook = await postWebhook(
-            requestQuery.shop,
-            accessToken,
-            Env.get("API_VERSION")
-          );
-          if (!webhook) {
-            throw new Error(
-              "ShopifyAppController.auth_callback: something went wrong with webhook subscription"
-            );
-          }
-        } else if (uninstallWebhook && uninstallWebhook.address !== path) {
-          const webhook = await updateWebhookPath(
-            requestQuery.shop,
-            accessToken,
-            Env.get("API_VERSION"),
-            uninstallWebhook.id,
-            path
-          );
-          if (!webhook) {
-            throw new Error(
-              "ShopifyAppController.auth_callback: something went wrong with webhook update"
-            );
-          }
-        }
         // retrieve shop details from the REST API and store them in our database
-        const shopifyShop = await getShop(
-          requestQuery.shop,
-          accessToken,
-          Env.get("API_VERSION")
-        );
+        const shopifyShop = await getShop(client);
         shop = await Shop.updateOrCreate(
           { shopifyDomain: requestQuery.shop },
           {
