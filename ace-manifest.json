@@ -1,5 +1,17 @@
 {
   "commands": {
+    "token": {
+      "settings": {
+        "loadApp": true,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/GetToken",
+      "commandName": "token",
+      "description": "Get shop access token",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
     "migrate:fresh": {
       "settings": {
         "loadApp": true,
@@ -26,6 +38,18 @@
           "description": "Print SQL queries instead of running migrations and seeding database"
         }
       ]
+    },
+    "webhooks:update": {
+      "settings": {
+        "loadApp": true,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/UpdateWebhooks",
+      "commandName": "webhooks:update",
+      "description": "update webhook addresses for a shop",
+      "args": [],
+      "aliases": [],
+      "flags": []
     },
     "dump:rcfile": {
       "settings": {},
