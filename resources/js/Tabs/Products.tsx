@@ -18,7 +18,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
-import { getProducts } from "../Helpers/actions";
+import { getProducts, getProductsCount } from "../Helpers/actions";
 import { disambiguateLabel, isEmpty } from "../Helpers/functions";
 import BulkAddTagModal from "../Modals/BulkAddTagModal";
 import ProductModal from "../Modals/ProductModal";
@@ -32,12 +32,14 @@ const Products = () => {
     nextPage,
     prevPage,
     pageNumber,
+    productTypes,
     productsCount,
     setProducts,
     setProductsLoading,
     setNextPage,
     setPrevPage,
     setPageNumber,
+    setProductsCount,
   } = useContext(ProductsContext);
 
   const [selectedItems, setSelectedItems] = useState([]);
@@ -166,9 +168,13 @@ const Products = () => {
         onNext={() => getProductPage(nextPage, +1)}
         onPrevious={() => getProductPage(prevPage, -1)}
       />
-      <TextStyle variation="subdued">{`${(pageNumber - 1) * pageLimit + 1} to ${
-        products.length + (pageNumber - 1) * pageLimit
-      } products (${productsCount} total)`}</TextStyle>
+      {!productsLoading && (
+        <TextStyle variation="subdued">{`${
+          products.length ? (pageNumber - 1) * pageLimit + 1 : 0
+        } to ${
+          products.length + (pageNumber - 1) * pageLimit
+        } products (${productsCount} total)`}</TextStyle>
+      )}
     </Stack>
   );
 

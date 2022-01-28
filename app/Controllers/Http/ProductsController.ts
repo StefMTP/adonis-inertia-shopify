@@ -60,6 +60,35 @@ export default class ProductsController {
     }
   }
 
+  public async totalVariantsCount({ request, response }: HttpContextContract) {
+    const shop: Shop = request.body().shop;
+    try {
+      const client = new Shopify.Clients.Rest(
+        shop.shopifyDomain,
+        shop.accessToken
+      );
+      let res: any = await client.get({
+        path: "products",
+        query: {
+          limit: 10,
+        },
+      });
+      let totalVariantsCount = res.body.products.reduce((sum, nextProduct) => {
+        return sum + nextProduct.variants.length;
+      }, 0);
+      while (res.pageInfo.nextPage) {
+        res = await client.get(res.pageInfo.nextPage);
+        totalVariantsCount += res.body.products.reduce((sum, nextProduct) => {
+          return sum + nextProduct.variants.length;
+        }, 0);
+      }
+      return response.status(200).json({ totalVariantsCount });
+    } catch (err) {
+      console.log(err.message || err);
+      return response.status(500).json({ message: err.message || err });
+    }
+  }
+
   public async allShopProductTags({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
     try {
@@ -71,6 +100,31 @@ export default class ProductsController {
         data: `{
           shop {
             productTags (first: 250) {
+              edges {
+                  node
+              }
+            }
+          }
+        }`,
+      });
+      return response.status(200).json(res);
+    } catch (err) {
+      console.log(err.message || err);
+      return response.status(500).json({ message: err.message || err });
+    }
+  }
+
+  public async allShopProductTypes({ request, response }: HttpContextContract) {
+    const shop: Shop = request.body().shop;
+    try {
+      const client = new Shopify.Clients.Graphql(
+        shop.shopifyDomain,
+        shop.accessToken
+      );
+      const res = await client.query({
+        data: `{
+          shop {
+            productTypes (first: 250) {
               edges {
                   node
               }

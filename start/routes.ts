@@ -41,8 +41,16 @@ Route.get(
   "ProductsController.productsCount"
 ).middleware("verifySessionToken");
 Route.get(
+  "/shop/products/totalVariants",
+  "ProductsController.totalVariantsCount"
+).middleware("verifySessionToken");
+Route.get(
   "/shop/products/tags",
   "ProductsController.allShopProductTags"
+).middleware("verifySessionToken");
+Route.get(
+  "/shop/productTypes",
+  "ProductsController.allShopProductTypes"
 ).middleware("verifySessionToken");
 Route.post("/shop/products/editTag", "ProductsController.editTag").middleware(
   "verifySessionToken"

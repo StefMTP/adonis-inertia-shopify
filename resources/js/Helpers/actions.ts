@@ -68,10 +68,12 @@ export const getProductsCount = async (
   return res;
 };
 
+export const getTotalVariantsCount = async (
+  redirectUri: string,
   app: ClientApplication<any>
 ) => {
   const sessionToken = await getSessionToken(app);
-  const res = await axios.get(`${redirectUri}/shop/products/count`, {
+  const res = await axios.get(`${redirectUri}/shop/products/totalVariants`, {
     headers: {
       Authorization: `Bearer ${sessionToken}`,
     },
@@ -131,6 +133,18 @@ export const getAllShopProductTags = async (
 ) => {
   const sessionToken = await getSessionToken(app);
   const res = await axios.get(`${redirectUri}/shop/products/tags`, {
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+
+  return res;
+};
+
+export const getAllShopProductTypes = async (
+  redirectUri: string,
+  app: ClientApplication<any>
+) => {
+  const sessionToken = await getSessionToken(app);
+  const res = await axios.get(`${redirectUri}/shop/productTypes`, {
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
 
