@@ -37,12 +37,22 @@ export default class ProductsController {
 
   public async productsCount({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
+    const { productType, status } = request.qs();
     try {
+      if (!shop || shop.isNotProperlyInstalled) {
+        throw new Error("Shop doesn't exist or isn't installed");
+      }
       const client = new Shopify.Clients.Rest(
         shop.shopifyDomain,
         shop.accessToken
       );
-      const res = await client.get({ path: "products/count" });
+      const res = await client.get({
+        path: "products/count",
+        query: {
+          product_type: productType,
+          status: status,
+        },
+      });
       return response.status(200).json(res);
     } catch (err) {
       console.log(err.message || err);

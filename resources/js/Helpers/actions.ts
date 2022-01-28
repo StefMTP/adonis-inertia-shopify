@@ -44,6 +44,30 @@ export const getProducts = async (
 
 export const getProductsCount = async (
   redirectUri: string,
+  app: ClientApplication<any>,
+  queryFilters?: { key: string; value: string }[]
+) => {
+  const sessionToken = await getSessionToken(app);
+  let link = `${redirectUri}/shop/products/count`;
+  if (queryFilters && queryFilters.length > 0) {
+    link += "?";
+    for (const filter of queryFilters) {
+      link += `${filter.key}=${filter.value}&`;
+    }
+    link = link.slice(0, -1);
+  }
+  const res = await axios.get(link, {
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+
+  if (res.data.redirect) {
+    Redirect.create(app).dispatch(Redirect.Action.REMOTE, res.data.redirect);
+  }
+  return res;
+};
+
   app: ClientApplication<any>
 ) => {
   const sessionToken = await getSessionToken(app);
