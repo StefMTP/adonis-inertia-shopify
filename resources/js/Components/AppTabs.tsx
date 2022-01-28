@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Card, Page, Tabs } from "@shopify/polaris";
 import Products from "../Tabs/Products";
 import Settings from "../Tabs/Settings";
+import Stats from "../Tabs/Stats";
 
 const AppTabs = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -25,17 +26,21 @@ const AppTabs = () => {
       accessibilityLabel: "settings",
       panelID: "settings-content-2",
     },
+    {
+      id: "3",
+      content: "Statistics",
+      accessibilityLabel: "stats",
+      panelID: "stats-content-3",
+    },
   ];
 
-  const tabComponents = [<Products />, <Settings />];
+  const tabComponents = [<Products />, <Settings />, <Stats />];
 
   return (
     <Page>
-      <Card>
+      <Card title="Product Extravaganza">
         <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange}>
-          <Card.Section title={tabs[selectedTab].content}>
-            {tabComponents[selectedTab]}
-          </Card.Section>
+          <Card.Section>{tabComponents[selectedTab]}</Card.Section>
         </Tabs>
       </Card>
     </Page>
