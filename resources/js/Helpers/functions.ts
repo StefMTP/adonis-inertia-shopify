@@ -12,6 +12,8 @@ export const disambiguateLabel = (key, value) => {
       return `Product status is ${value}`;
     case "productType":
       return `Product types: ${value.join(", ")}`;
+    case "collection":
+      return `Products of collection: ${value}`;
     default:
       return value;
   }

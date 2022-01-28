@@ -46,31 +46,42 @@ const Products = () => {
 
   const [productType, setProductType] = useState(null);
   const [status, setStatus] = useState(null);
+  const [collection, setCollection] = useState(null);
   const [queryValue, setQueryValue] = useState(null);
   const handleProductTypeChange = useCallback(
     (value) => setProductType(value),
     []
   );
   const handleStatusChange = useCallback((value) => setStatus(value), []);
+  const handleCollectionChange = useCallback(
+    (value) => setCollection(value),
+    []
+  );
   const handleFiltersQueryChange = useCallback(
     (value) => setQueryValue(value),
     []
   );
   const handleProductTypeRemove = useCallback(() => setProductType(null), []);
   const handleStatusRemove = useCallback(() => setStatus(null), []);
+  const handleCollectionRemove = useCallback(() => setCollection(null), []);
   const handleQueryValueRemove = useCallback(() => setQueryValue(null), []);
   const handleFiltersClearAll = useCallback(() => {
     handleProductTypeRemove();
     handleStatusRemove();
+    handleCollectionRemove();
     handleQueryValueRemove();
-  }, [handleProductTypeRemove, handleStatusRemove, handleQueryValueRemove]);
+  }, [
+    handleProductTypeRemove,
+    handleStatusRemove,
+    handleCollectionRemove,
+    handleQueryValueRemove,
+  ]);
 
   const promotedBulkActions = [
     {
       content: "Bulk add tags",
       onAction: () => {
         setBulkAddModalActive(true);
-        console.log({ selectedItems, selectedProducts });
       },
     },
   ];
@@ -94,6 +105,11 @@ const Products = () => {
     if (!isEmpty(status)) {
       queryFilters.push({ key: "status", value: status });
     }
+    getProductsCount(redirectUri, appCredentials.app, queryFilters).then(
+      (res) => {
+        setProductsCount(res.data.body.count);
+      }
+    );
     getProducts(
       redirectUri,
       appCredentials.app,
@@ -182,17 +198,27 @@ const Products = () => {
         <ChoiceList
           title="Product type"
           titleHidden
-          choices={[
-            { label: "Decoration", value: "decoration" },
-            { label: "Apparel", value: "apparel" },
-            { label: "Accessories", value: "accessories" },
-          ]}
+          choices={productTypes.map((type) => {
+            return { label: type, value: type };
+          })}
           selected={productType || []}
           onChange={handleProductTypeChange}
-          allowMultiple
         />
       ),
       shortcut: true,
+    },
+    {
+      key: "collection",
+      label: "Collection",
+      filter: (
+        <ChoiceList
+          title="Collection"
+          titleHidden
+          choices={[]}
+          selected={collection || []}
+          onChange={handleCollectionChange}
+        />
+      ),
     },
   ];
 
@@ -211,6 +237,14 @@ const Products = () => {
       key,
       label: disambiguateLabel(key, status),
       onRemove: handleStatusRemove,
+    });
+  }
+  if (!isEmpty(collection)) {
+    const key = "collection";
+    appliedFilters.push({
+      key,
+      label: disambiguateLabel(key, status),
+      onRemove: handleCollectionRemove,
     });
   }
 
