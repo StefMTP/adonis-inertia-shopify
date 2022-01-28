@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   getAllShopProductTags,
+  getAllShopProductTypes,
   getProducts,
   getProductsCount,
 } from "../Helpers/actions";
@@ -20,14 +21,20 @@ type ProductsContextType = {
   nextPage: any;
   pageNumber: number;
   productsCount: number;
+  totalProductsCount: number;
+  totalVariantsCount: number;
   productsTags: [];
+  productTypes: [];
   setProducts: React.Dispatch<React.SetStateAction<product[]>>;
   setProductsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setPrevPage: React.Dispatch<React.SetStateAction<any>>;
   setNextPage: React.Dispatch<React.SetStateAction<any>>;
   setPageNumber: React.Dispatch<React.SetStateAction<number>>;
   setProductsCount: React.Dispatch<React.SetStateAction<number>>;
+  setTotalProductsCount: React.Dispatch<React.SetStateAction<number>>;
+  setTotalVariantsCount: React.Dispatch<React.SetStateAction<number>>;
   setProductsTags: React.Dispatch<React.SetStateAction<[]>>;
+  setProductTypes: React.Dispatch<React.SetStateAction<[]>>;
 };
 
 const productsDefaultValue: ProductsContextType = {
@@ -37,14 +44,20 @@ const productsDefaultValue: ProductsContextType = {
   nextPage: "",
   pageNumber: 1,
   productsCount: 0,
+  totalProductsCount: 0,
+  totalVariantsCount: 0,
   productsTags: [],
+  productTypes: [],
   setProducts: () => {},
   setProductsLoading: () => {},
   setPrevPage: () => {},
   setNextPage: () => {},
   setPageNumber: () => {},
   setProductsCount: () => {},
+  setTotalProductsCount: () => {},
+  setTotalVariantsCount: () => {},
   setProductsTags: () => {},
+  setProductTypes: () => {},
 };
 
 export const ProductsContext = createContext(productsDefaultValue);
@@ -63,8 +76,17 @@ const ProductsProvider = ({
   const [productsCount, setProductsCount] = useState(
     productsDefaultValue.productsCount
   );
+  const [totalProductsCount, setTotalProductsCount] = useState(
+    productsDefaultValue.totalProductsCount
+  );
+  const [totalVariantsCount, setTotalVariantsCount] = useState(
+    productsDefaultValue.totalVariantsCount
+  );
   const [productsTags, setProductsTags] = useState(
     productsDefaultValue.productsTags
+  );
+  const [productTypes, setProductTypes] = useState(
+    productsDefaultValue.productTypes
   );
 
   const { appCredentials } = useContext(AppCredentialsContext);
@@ -76,10 +98,17 @@ const ProductsProvider = ({
       setProductsLoading(true);
       getProductsCount(redirectUri, appBridgeClient).then((res) => {
         setProductsCount(res.data.body.count);
+        setTotalProductsCount(res.data.body.count);
       });
       getAllShopProductTags(redirectUri, appBridgeClient).then((res) => {
-        console.log(res.data.body.data.shop.productTags.edges);
-        setProductsTags(res.data.body.data.shop.productTags.edges);
+        setProductsTags(
+          res.data.body.data.shop.productTags.edges.map((edge) => edge.node)
+        );
+      });
+      getAllShopProductTypes(redirectUri, appBridgeClient).then((res) => {
+        setProductTypes(
+          res.data.body.data.shop.productTypes.edges.map((edge) => edge.node)
+        );
       });
       getProducts(redirectUri, appBridgeClient, pageLimit).then((res) => {
         try {
@@ -107,14 +136,20 @@ const ProductsProvider = ({
         prevPage,
         pageNumber,
         productsCount,
+        totalProductsCount,
+        totalVariantsCount,
         productsTags,
+        productTypes,
         setProducts,
         setProductsLoading,
         setNextPage,
         setPrevPage,
         setPageNumber,
         setProductsCount,
+        setTotalProductsCount,
+        setTotalVariantsCount,
         setProductsTags,
+        setProductTypes,
       }}
     >
       {children}
