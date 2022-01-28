@@ -2,7 +2,7 @@ import axios from "axios";
 import { ClientApplication } from "@shopify/app-bridge";
 import { getSessionToken } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
-import { product } from "../Contexts/ProductsContext";
+import { product } from "./types";
 
 export const getAppCredentials = async (redirectUri: string, shop: string) => {
   const res = await axios.get(`${redirectUri}/credentials?shop=${shop}`);

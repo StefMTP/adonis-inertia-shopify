@@ -10,13 +10,14 @@ import {
 } from "@shopify/polaris";
 import React, { useCallback, useContext, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
-import { product, ProductsContext } from "../Contexts/ProductsContext";
+import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
 import {
   addTagToProduct,
   deleteTagFromProduct,
   getProducts,
 } from "../Helpers/actions";
+import { product } from "../Helpers/types";
 
 const ProductModal = ({ product }: { product: product }) => {
   const [active, setActive] = useState(false);

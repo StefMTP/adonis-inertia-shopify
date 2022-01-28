@@ -9,9 +9,10 @@ import {
 } from "@shopify/polaris";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
-import { product, ProductsContext } from "../Contexts/ProductsContext";
+import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
 import { addTagToProduct, getProducts } from "../Helpers/actions";
+import { product } from "../Helpers/types";
 
 const BulkAddTagModal = ({
   selectedProducts,

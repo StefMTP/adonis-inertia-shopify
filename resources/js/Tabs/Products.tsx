@@ -142,13 +142,18 @@ const Products = () => {
   };
 
   const paginationMarkup = (
-    <Pagination
-      hasNext={!!nextPage && !productsLoading}
-      hasPrevious={!!prevPage && !productsLoading}
-      label={`Page ${pageNumber}`}
-      onNext={() => getProductPage(nextPage, +1)}
-      onPrevious={() => getProductPage(prevPage, -1)}
-    />
+    <Stack alignment="center">
+      <Pagination
+        hasNext={!!nextPage && !productsLoading}
+        hasPrevious={!!prevPage && !productsLoading}
+        label={`Page ${pageNumber}`}
+        onNext={() => getProductPage(nextPage, +1)}
+        onPrevious={() => getProductPage(prevPage, -1)}
+      />
+      <TextStyle variation="subdued">{`${(pageNumber - 1) * pageLimit + 1} to ${
+        products.length + (pageNumber - 1) * pageLimit
+      } products (${productsCount} total)`}</TextStyle>
+    </Stack>
   );
 
   const filters = [
@@ -211,7 +216,14 @@ const Products = () => {
 
   return (
     <Card.Subsection>
-      {paginationMarkup}
+      <div style={{ marginBottom: "10px" }}>
+        <Stack distribution="equalSpacing">
+          {paginationMarkup}
+          <Button primary onClick={() => refreshProducts()}>
+            Refresh products
+          </Button>
+        </Stack>
+      </div>
       <Filters
         filters={filters}
         queryValue={queryValue}
@@ -220,9 +232,6 @@ const Products = () => {
         onQueryClear={handleQueryValueRemove}
         onClearAll={handleFiltersClearAll}
       />
-      <Button primary onClick={() => refreshProducts()}>
-        Refresh products
-      </Button>
       <ResourceList
         emptyState={
           !products.length && (
@@ -238,7 +247,6 @@ const Products = () => {
             </EmptyState>
           )
         }
-        totalItemsCount={productsCount}
         selectedItems={selectedItems}
         onSelectionChange={handleSelectionChange}
         promotedBulkActions={promotedBulkActions}
