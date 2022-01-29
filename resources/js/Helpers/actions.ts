@@ -133,9 +133,12 @@ export const getTagProducts = async (
   tag: string
 ) => {
   const sessionToken = await getSessionToken(app);
-  const res = await axios.get(`${redirectUri}/shop/tagProducts?tag=${tag}`, {
-    headers: { Authorization: `Bearer ${sessionToken}` },
-  });
+  const res = await axios.get(
+    `${redirectUri}/shop/products/tagProducts?tag=${tag}`,
+    {
+      headers: { Authorization: `Bearer ${sessionToken}` },
+    }
+  );
 
   return res;
 };

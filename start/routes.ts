@@ -20,41 +20,30 @@
 
 import Route from "@ioc:Adonis/Core/Route";
 
-Route.get("/app", "ShopifyAppController.app").middleware("verifyHmac");
-Route.get("/auth/callback", "ShopifyAppController.auth_callback").middleware([
-  "verifyHmac",
-  "verifyRegEx",
-  "verifyState",
-]);
-Route.get("/credentials", "ShopifyAppController.credentials");
+Route.group(() => {
+  Route.get("/app", "ShopifyAppController.app");
+  Route.get("/auth/callback", "ShopifyAppController.auth_callback").middleware([
+    "verifyRegEx",
+    "verifyState",
+  ]);
+}).middleware("verifyHmac");
 Route.post("/uninstall", "ShopifyAppController.uninstall").middleware(
   "verifyWebhooksHmac"
 );
 
+Route.get("/credentials", "ShopifyAppController.credentials");
 Route.get("/settings", "ShopifyAppController.settings");
 
-Route.get("/shop/products", "ProductsController.index").middleware(
-  "verifySessionToken"
-);
-Route.get(
-  "/shop/products/count",
-  "ProductsController.productsCount"
-).middleware("verifySessionToken");
-Route.get(
-  "/shop/products/totalVariants",
-  "ProductsController.totalVariantsCount"
-).middleware("verifySessionToken");
-Route.get(
-  "/shop/products/tags",
-  "ProductsController.allShopProductTags"
-).middleware("verifySessionToken");
-Route.get("shop/tagProducts", "ProductsController.tagProducts").middleware(
-  "verifySessionToken"
-);
-Route.get(
-  "/shop/productTypes",
-  "ProductsController.allShopProductTypes"
-).middleware("verifySessionToken");
-Route.post("/shop/products/editTag", "ProductsController.editTag").middleware(
-  "verifySessionToken"
-);
+Route.group(() => {
+  Route.get("/products", "ProductsController.index");
+  Route.group(() => {
+    Route.get("/count", "ProductsController.productsCount");
+    Route.get("/totalVariants", "ProductsController.totalVariantsCount");
+    Route.get("/tags", "ProductsController.allShopProductTags");
+    Route.get("tagProducts", "ProductsController.tagProducts");
+    Route.post("/editTag", "ProductsController.editTag");
+  }).prefix("/products");
+  Route.get("/productTypes", "ProductsController.allShopProductTypes");
+})
+  .prefix("/shop")
+  .middleware("verifySessionToken");
