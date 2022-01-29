@@ -22,19 +22,19 @@ const AppTabs = () => {
     },
     {
       id: "2",
-      content: "Settings",
-      accessibilityLabel: "settings",
-      panelID: "settings-content-2",
+      content: "Statistics",
+      accessibilityLabel: "stats",
+      panelID: "stats-content-2",
     },
     {
       id: "3",
-      content: "Statistics",
-      accessibilityLabel: "stats",
-      panelID: "stats-content-3",
+      content: "Settings",
+      accessibilityLabel: "settings",
+      panelID: "settings-content-3",
     },
   ];
 
-  const tabComponents = [<Products />, <Settings />, <Stats />];
+  const tabComponents = [<Products />, <Stats />, <Settings />];
 
   return (
     <Page>
