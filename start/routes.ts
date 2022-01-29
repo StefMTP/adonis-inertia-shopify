@@ -48,6 +48,9 @@ Route.get(
   "/shop/products/tags",
   "ProductsController.allShopProductTags"
 ).middleware("verifySessionToken");
+Route.get("shop/tagProducts", "ProductsController.tagProducts").middleware(
+  "verifySessionToken"
+);
 Route.get(
   "/shop/productTypes",
   "ProductsController.allShopProductTypes"

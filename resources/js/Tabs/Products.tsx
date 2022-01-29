@@ -20,6 +20,7 @@ import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
 import { getProducts, getProductsCount } from "../Helpers/actions";
 import { disambiguateLabel, isEmpty } from "../Helpers/functions";
+import { product } from "../Helpers/types";
 import BulkAddTagModal from "../Modals/BulkAddTagModal";
 import ProductModal from "../Modals/ProductModal";
 
@@ -42,6 +43,8 @@ const Products = () => {
     setProductsCount,
   } = useContext(ProductsContext);
 
+  const [modalProduct, setModalProduct] = useState<product>({} as product);
+  const [productModalActive, setProductModalActive] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [bulkAddModalActive, setBulkAddModalActive] = useState(false);
@@ -173,7 +176,7 @@ const Products = () => {
           products.length ? (pageNumber - 1) * pageLimit + 1 : 0
         } to ${
           products.length + (pageNumber - 1) * pageLimit
-        } products (${productsCount} total)`}</TextStyle>
+        } products`}</TextStyle>
       )}
     </Stack>
   );
@@ -290,6 +293,7 @@ const Products = () => {
         selectedItems={selectedItems}
         onSelectionChange={handleSelectionChange}
         promotedBulkActions={promotedBulkActions}
+        totalItemsCount={productsCount}
         loading={productsLoading}
         resourceName={{ singular: "product", plural: "products" }}
         items={products}
@@ -319,12 +323,24 @@ const Products = () => {
               <Caption>
                 Created at: {new Date(created_at).toLocaleDateString()}
               </Caption>
-              <ProductModal product={product} />
+              <Button
+                onClick={() => {
+                  setModalProduct(product);
+                  setProductModalActive(true);
+                }}
+              >
+                Edit product tags
+              </Button>
             </ResourceItem>
           );
         }}
       />
       {paginationMarkup}
+      <ProductModal
+        product={modalProduct}
+        active={productModalActive}
+        toggleActive={setProductModalActive}
+      />
       <BulkAddTagModal
         selectedProducts={selectedProducts}
         active={bulkAddModalActive}

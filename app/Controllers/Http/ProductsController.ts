@@ -70,7 +70,7 @@ export default class ProductsController {
       let res: any = await client.get({
         path: "products",
         query: {
-          limit: 10,
+          limit: 250,
         },
       });
       let totalVariantsCount = res.body.products.reduce((sum, nextProduct) => {
@@ -108,6 +108,38 @@ export default class ProductsController {
         }`,
       });
       return response.status(200).json(res);
+    } catch (err) {
+      console.log(err.message || err);
+      return response.status(500).json({ message: err.message || err });
+    }
+  }
+
+  public async tagProducts({ request, response }: HttpContextContract) {
+    const shop: Shop = request.body().shop;
+    const tag = request.qs().tag;
+    try {
+      const client = new Shopify.Clients.Rest(
+        shop.shopifyDomain,
+        shop.accessToken
+      );
+      let res: any = await client.get({
+        path: "products",
+        query: {
+          limit: 250,
+        },
+      });
+      let productNames = res.body.products
+        .filter((product) => product.tags.includes(tag))
+        .map((product) => product.title);
+      while (res.pageInfo.nextPage) {
+        res = await client.get(res.pageInfo.nextPage);
+        productNames = productNames.concat(
+          res.body.products
+            .filter((product) => product.tags.includes(tag))
+            .map((product) => product.title)
+        );
+      }
+      return response.status(200).json({ productNames });
     } catch (err) {
       console.log(err.message || err);
       return response.status(500).json({ message: err.message || err });
