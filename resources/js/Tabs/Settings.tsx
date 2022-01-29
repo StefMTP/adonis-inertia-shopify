@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
-import { getProducts } from "../Helpers/actions";
+import { getProducts, getProductsCount } from "../Helpers/actions";
 
 const Settings = () => {
   const { redirectUri, appCredentials } = useContext(AppCredentialsContext);
@@ -14,6 +14,7 @@ const Settings = () => {
     setNextPage,
     setPrevPage,
     setPageNumber,
+    setProductsCount,
   } = useContext(ProductsContext);
   const { pageLimit, setPageLimit } = useContext(SettingsContext);
   const pageLimitOptions = [
@@ -39,6 +40,9 @@ const Settings = () => {
             loading={productsLoading}
             onClick={() => {
               setProductsLoading(true);
+              getProductsCount(redirectUri, appCredentials.app).then((res) => {
+                setProductsCount(res.data.body.count);
+              });
               getProducts(redirectUri, appCredentials.app, pageLimit).then(
                 (res) => {
                   try {
