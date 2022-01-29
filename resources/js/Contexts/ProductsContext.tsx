@@ -5,7 +5,7 @@ import {
   getProducts,
   getProductsCount,
 } from "../Helpers/actions";
-import { product } from "../Helpers/types";
+import { product } from "./../../../app/Helpers/ShopifyTypes";
 import { AppCredentialsContext } from "./AppCredentialsContext";
 import { SettingsContext } from "./SettingsContext";
 

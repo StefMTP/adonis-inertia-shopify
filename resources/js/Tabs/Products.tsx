@@ -20,7 +20,7 @@ import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
 import { getProducts, getProductsCount } from "../Helpers/actions";
 import { disambiguateLabel, isEmpty } from "../Helpers/functions";
-import { product } from "../Helpers/types";
+import { product } from "./../../../app/Helpers/ShopifyTypes";
 import BulkAddTagModal from "../Modals/BulkAddTagModal";
 import ProductModal from "../Modals/ProductModal";
 

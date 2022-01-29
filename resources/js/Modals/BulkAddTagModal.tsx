@@ -12,7 +12,7 @@ import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
 import { addTagToProduct, getProducts } from "../Helpers/actions";
-import { product } from "../Helpers/types";
+import { product } from "./../../../app/Helpers/ShopifyTypes";
 
 const BulkAddTagModal = ({
   selectedProducts,
