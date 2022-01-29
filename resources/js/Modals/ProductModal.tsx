@@ -19,8 +19,15 @@ import {
 } from "../Helpers/actions";
 import { product } from "../Helpers/types";
 
-const ProductModal = ({ product }: { product: product }) => {
-  const [active, setActive] = useState(false);
+const ProductModal = ({
+  product,
+  active,
+  toggleActive,
+}: {
+  product: product;
+  active: boolean;
+  toggleActive: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [tagInput, setTagInput] = useState("");
   const [editingTagInProgress, setEditingTagInProgress] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -31,24 +38,16 @@ const ProductModal = ({ product }: { product: product }) => {
   const { pageLimit } = useContext(SettingsContext);
   const { setProducts } = useContext(ProductsContext);
 
-  const handleClick = useCallback(() => setActive(!active), [active]);
+  const handleClick = useCallback(() => toggleActive(!active), [active]);
   const handleChange = useCallback((newValue) => setTagInput(newValue), []);
   const toggleIsToastActive = useCallback(
     () => setIsToastActive((prevState) => !prevState),
     []
   );
 
-  const activator = <Button onClick={handleClick}>Edit product tags</Button>;
-
   return (
     <div>
-      <Modal
-        activator={activator}
-        open={active}
-        onClose={handleClick}
-        title={product.title}
-        large
-      >
+      <Modal open={active} onClose={handleClick} title={product.title} large>
         <Modal.Section>
           <Layout>
             <Layout.Section>
