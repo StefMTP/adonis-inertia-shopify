@@ -8,13 +8,14 @@ import {
   TextStyle,
   Toast,
 } from "@shopify/polaris";
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { SettingsContext } from "../Contexts/SettingsContext";
 import {
   addTagToProduct,
   deleteTagFromProduct,
+  getProduct,
   getProducts,
 } from "../Helpers/actions";
 import { product } from "./../../../app/Helpers/ShopifyTypes";
@@ -33,6 +34,7 @@ const ProductModal = ({
   const [toastMessage, setToastMessage] = useState("");
   const [toastError, setToastError] = useState(false);
   const [isToastActive, setIsToastActive] = useState(false);
+  const [productTags, setProductTags] = useState("");
 
   const { appCredentials, redirectUri } = useContext(AppCredentialsContext);
   const { pageLimit } = useContext(SettingsContext);
@@ -47,15 +49,21 @@ const ProductModal = ({
 
   return (
     <div>
-      <Modal open={active} onClose={handleClick} title={product.title} large>
+      <Modal
+        open={active}
+        onClose={handleClick}
+        title={product.title}
+        large
+        onTransitionEnd={() => setProductTags(product.tags)}
+      >
         <Modal.Section>
           <Layout>
             <Layout.Section>
               <img src={product.image?.src} alt={product.title} width={200} />
-              {product.tags && product.tags.length > 0 ? (
+              {productTags && productTags.length > 0 ? (
                 <Stack alignment="center">
                   <TextStyle variation="strong">Current tags:</TextStyle>
-                  {product.tags.split(", ").map((tag, index) => (
+                  {productTags.split(", ").map((tag, index) => (
                     <Tag
                       key={tag + index}
                       onRemove={() => {
@@ -63,7 +71,8 @@ const ProductModal = ({
                         deleteTagFromProduct(
                           redirectUri,
                           appCredentials.app,
-                          product,
+                          productTags,
+                          product.id,
                           tag
                         ).then(() => {
                           getProducts(
@@ -75,6 +84,14 @@ const ProductModal = ({
                             setEditingTagInProgress(false);
                             setToastMessage("Product tag removed");
                             toggleIsToastActive();
+                          });
+                          getProduct(
+                            redirectUri,
+                            appCredentials.app,
+                            product.id,
+                            ["tags"]
+                          ).then((res) => {
+                            setProductTags(res.data.body.product.tags);
                           });
                         });
                       }}
@@ -104,7 +121,8 @@ const ProductModal = ({
                       addTagToProduct(
                         redirectUri,
                         appCredentials.app,
-                        product,
+                        productTags,
+                        product.id,
                         tagInput
                       ).then((res) => {
                         if (
@@ -124,9 +142,18 @@ const ProductModal = ({
                           ).then((res) => {
                             setProducts(res.data.body.products);
                             setTagInput("");
+                            setToastError(false);
                             setEditingTagInProgress(false);
                             setToastMessage("Product tag added");
                             toggleIsToastActive();
+                          });
+                          getProduct(
+                            redirectUri,
+                            appCredentials.app,
+                            product.id,
+                            ["tags"]
+                          ).then((res) => {
+                            setProductTags(res.data.body.product.tags);
                           });
                         }
                       });

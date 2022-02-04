@@ -35,13 +35,14 @@ Route.get("/credentials", "ShopifyAppController.credentials");
 Route.get("/settings", "ShopifyAppController.settings");
 
 Route.group(() => {
-  Route.get("/products", "ProductsController.index");
   Route.group(() => {
+    Route.get("/", "ProductsController.productPage");
     Route.get("/count", "ProductsController.productsCount");
     Route.get("/totalVariants", "ProductsController.totalVariantsCount");
     Route.get("/tags", "ProductsController.allShopProductTags");
     Route.get("tagProducts", "ProductsController.tagProducts");
     Route.post("/editTag", "ProductsController.editTag");
+    Route.get("/:productId", "ProductsController.showProduct");
   }).prefix("/products");
   Route.get("/productTypes", "ProductsController.allShopProductTypes");
 })

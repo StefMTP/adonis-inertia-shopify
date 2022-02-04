@@ -74,7 +74,8 @@ const BulkAddTagModal = ({
                         await addTagToProduct(
                           redirectUri,
                           appCredentials.app,
-                          product,
+                          product.tags,
+                          product.id,
                           tagInput
                         );
                       })

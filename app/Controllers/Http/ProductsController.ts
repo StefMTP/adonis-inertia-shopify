@@ -27,7 +27,23 @@ export default class ProductsController {
           status: status,
         },
       };
-      const res = await client.get(params);
+  public async showProduct({ request, params, response }: HttpContextContract) {
+    const shop: Shop = request.body().shop;
+    const productId = params.productId;
+    const fields = request.qs().fields;
+    try {
+      const res = await createRestClient(shop.shopifyDomain, shop.accessToken)
+        .then((client) =>
+          client.get({
+            path: `products/${+productId}`,
+            query: {
+              fields,
+            },
+          })
+        )
+        .catch((err) => {
+          throw new Error(err);
+        });
       return response.status(200).json(res);
     } catch (err) {
       console.log(err.message || err);

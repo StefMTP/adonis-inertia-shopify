@@ -42,6 +42,28 @@ export const getProducts = async (
   return res;
 };
 
+export const getProduct = async (
+  redirectUri: string,
+  app: ClientApplication<any>,
+  productId: string,
+  fields: string[]
+) => {
+  const sessionToken = await getSessionToken(app);
+  const requestFields = fields.join(",");
+  const res = await axios.get(`${redirectUri}/shop/products/${productId}`, {
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+    params: {
+      fields: requestFields,
+    },
+  });
+  if (res.data.redirect) {
+    Redirect.create(app).dispatch(Redirect.Action.REMOTE, res.data.redirect);
+  }
+  return res;
+};
+
 export const getProductsCount = async (
   redirectUri: string,
   app: ClientApplication<any>,
@@ -87,19 +109,20 @@ export const getTotalVariantsCount = async (
 export const addTagToProduct = async (
   redirectUri: string,
   app: ClientApplication<any>,
-  product: product,
+  productTags: string,
+  productId: string,
   tagInput: string
 ): Promise<any> => {
   const sessionToken = await getSessionToken(app);
-  if (product.tags.includes(tagInput)) {
+  if (productTags.includes(tagInput)) {
     const res = { message: "Tag already exists on product" };
     return res;
   }
   const res = await axios.post(
     `${redirectUri}/shop/products/editTag`,
     {
-      id: product.id,
-      tags: `${product.tags},${tagInput}`,
+      id: productId,
+      tags: `${productTags},${tagInput}`,
     },
     { headers: { Authorization: `Bearer ${sessionToken}` } }
   );
@@ -109,17 +132,18 @@ export const addTagToProduct = async (
 export const deleteTagFromProduct = async (
   redirectUri: string,
   app: ClientApplication<any>,
-  product: product,
+  productTags: string,
+  productId: string,
   tagToDelete: string
 ) => {
   const sessionToken = await getSessionToken(app);
-  const tagsRemaining = product.tags
+  const tagsRemaining = productTags
     .split(", ")
     .filter((tag) => tag !== tagToDelete);
   const res = await axios.post(
     `${redirectUri}/shop/products/editTag`,
     {
-      id: product.id,
+      id: productId,
       tags: tagsRemaining,
     },
     { headers: { Authorization: `Bearer ${sessionToken}` } }
