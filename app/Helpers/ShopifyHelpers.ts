@@ -1,6 +1,6 @@
 import axios from "axios";
 import { RestClient } from "@shopify/shopify-api/dist/clients/rest";
-import { DataType } from "@shopify/shopify-api";
+import Shopify, { DataType } from "@shopify/shopify-api";
 
 export type shop = {
   name: string;
@@ -13,6 +13,20 @@ export type webhook = {
   topic: string;
   address: string;
   format: string;
+};
+
+export const createRestClient = async (
+  shopShopifyDomain: string,
+  accessToken: string
+) => {
+  return new Shopify.Clients.Rest(shopShopifyDomain, accessToken);
+};
+
+export const createGraphQLClient = async (
+  shopShopifyDomain: string,
+  accessToken: string
+) => {
+  return new Shopify.Clients.Graphql(shopShopifyDomain, accessToken);
 };
 
 export const getScopes = async (
@@ -213,4 +227,19 @@ export const createOrUpdateWebhook = async (
       );
     }
   }
+};
+
+export const getAllProducts = async (client: RestClient) => {
+  let res: any = await client.get({
+    path: "products",
+    query: {
+      limit: 250,
+    },
+  });
+  let products = res.body.products;
+  while (res.pageInfo.nextPage) {
+    res = await client.get(res.pageInfo.nextPage);
+    products = products.concat(res.body.products);
+  }
+  return products;
 };
