@@ -1,9 +1,16 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   getAllShopProductTags,
   getAllShopProductTypes,
   getProducts,
   getProductsCount,
+  getCollections,
 } from "../Helpers/actions";
 import { product } from "./../../../app/Helpers/ShopifyTypes";
 import { AppCredentialsContext } from "./AppCredentialsContext";
@@ -25,6 +32,7 @@ type ProductsContextType = {
   totalVariantsCount: number;
   productsTags: [];
   productTypes: [];
+  collections: string[];
   setProducts: React.Dispatch<React.SetStateAction<product[]>>;
   setProductsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setPrevPage: React.Dispatch<React.SetStateAction<any>>;
@@ -35,6 +43,7 @@ type ProductsContextType = {
   setTotalVariantsCount: React.Dispatch<React.SetStateAction<number>>;
   setProductsTags: React.Dispatch<React.SetStateAction<[]>>;
   setProductTypes: React.Dispatch<React.SetStateAction<[]>>;
+  setCollections: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 const productsDefaultValue: ProductsContextType = {
@@ -48,6 +57,7 @@ const productsDefaultValue: ProductsContextType = {
   totalVariantsCount: 0,
   productsTags: [],
   productTypes: [],
+  collections: [],
   setProducts: () => {},
   setProductsLoading: () => {},
   setPrevPage: () => {},
@@ -58,6 +68,7 @@ const productsDefaultValue: ProductsContextType = {
   setTotalVariantsCount: () => {},
   setProductsTags: () => {},
   setProductTypes: () => {},
+  setCollections: () => {},
 };
 
 export const ProductsContext = createContext(productsDefaultValue);
@@ -88,6 +99,9 @@ const ProductsProvider = ({
   const [productTypes, setProductTypes] = useState(
     productsDefaultValue.productTypes
   );
+  const [collections, setCollections] = useState(
+    productsDefaultValue.collections
+  );
 
   const { appCredentials } = useContext(AppCredentialsContext);
   const appBridgeClient = appCredentials.app;
@@ -108,6 +122,11 @@ const ProductsProvider = ({
       getAllShopProductTypes(redirectUri, appBridgeClient).then((res) => {
         setProductTypes(
           res.data.body.data.shop.productTypes.edges.map((edge) => edge.node)
+        );
+      });
+      getCollections(redirectUri, appBridgeClient).then((res) => {
+        setCollections(
+          res.data.body.data.collections.edges.map((edge) => edge.node.title)
         );
       });
       getProducts(redirectUri, appBridgeClient, pageLimit).then((res) => {
@@ -140,6 +159,7 @@ const ProductsProvider = ({
         totalVariantsCount,
         productsTags,
         productTypes,
+        collections,
         setProducts,
         setProductsLoading,
         setNextPage,
@@ -150,6 +170,7 @@ const ProductsProvider = ({
         setTotalVariantsCount,
         setProductsTags,
         setProductTypes,
+        setCollections,
       }}
     >
       {children}

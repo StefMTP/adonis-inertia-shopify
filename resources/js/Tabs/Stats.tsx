@@ -9,7 +9,9 @@ import TagModal from "../Modals/TagModal";
 const Stats = () => {
   const { redirectUri, appCredentials } = useContext(AppCredentialsContext);
   const {
+    productTypes,
     productsTags,
+    collections,
     totalVariantsCount,
     setTotalVariantsCount,
     totalProductsCount,
@@ -24,7 +26,11 @@ const Stats = () => {
   }, []);
   return (
     <Card.Subsection>
-      {totalVariantsCount && totalProductsCount && productsTags ? (
+      {totalVariantsCount &&
+      totalProductsCount &&
+      productsTags &&
+      productTypes &&
+      collections ? (
         <Layout>
           <Layout.Section oneThird>
             <Card
@@ -42,6 +48,30 @@ const Stats = () => {
                 <TextStyle variation="subdued">
                   {totalProductsCount} total products in store
                 </TextStyle>
+              </Card.Section>
+              <Card.Section title="Product Types">
+                <Stack spacing="loose">
+                  {productTypes.map((productType, index) => (
+                    <Badge key={productType + index}>{productType}</Badge>
+                  ))}
+                </Stack>
+              </Card.Section>
+              <Card.Section title="Collections">
+                <Stack spacing="loose">
+                  {collections.map((collection, index) => (
+                    <div
+                      key={collection + index}
+                      onClick={() => {}}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <Badge>
+                        {collection.length > 12
+                          ? collection.substring(0, 12) + "..."
+                          : collection}
+                      </Badge>
+                    </div>
+                  ))}
+                </Stack>
               </Card.Section>
             </Card>
           </Layout.Section>
