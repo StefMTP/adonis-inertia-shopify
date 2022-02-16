@@ -32,7 +32,7 @@ type ProductsContextType = {
   totalVariantsCount: number;
   productsTags: [];
   productTypes: [];
-  collections: string[];
+  collections: { id: string; title: string }[];
   setProducts: React.Dispatch<React.SetStateAction<product[]>>;
   setProductsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setPrevPage: React.Dispatch<React.SetStateAction<any>>;
@@ -43,7 +43,9 @@ type ProductsContextType = {
   setTotalVariantsCount: React.Dispatch<React.SetStateAction<number>>;
   setProductsTags: React.Dispatch<React.SetStateAction<[]>>;
   setProductTypes: React.Dispatch<React.SetStateAction<[]>>;
-  setCollections: React.Dispatch<React.SetStateAction<string[]>>;
+  setCollections: React.Dispatch<
+    React.SetStateAction<{ id: string; title: string }[]>
+  >;
 };
 
 const productsDefaultValue: ProductsContextType = {
@@ -126,7 +128,9 @@ const ProductsProvider = ({
       });
       getCollections(redirectUri, appBridgeClient).then((res) => {
         setCollections(
-          res.data.body.data.collections.edges.map((edge) => edge.node.title)
+          res.data.body.data.collections.edges.map((edge) => {
+            return { id: edge.node.id, title: edge.node.title };
+          })
         );
       });
       getProducts(redirectUri, appBridgeClient, pageLimit).then((res) => {

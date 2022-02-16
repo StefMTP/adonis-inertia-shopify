@@ -13,7 +13,7 @@ import {
   TextStyle,
   Thumbnail,
 } from "@shopify/polaris";
-import { ProductsMajor } from "@shopify/polaris-icons";
+import { ProductsMajor, RefreshMajor } from "@shopify/polaris-icons";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
@@ -35,6 +35,7 @@ const Products = () => {
     pageNumber,
     productTypes,
     productsCount,
+    collections,
     setProducts,
     setProductsLoading,
     setNextPage,
@@ -223,7 +224,9 @@ const Products = () => {
         <ChoiceList
           title="Collection"
           titleHidden
-          choices={[]}
+          choices={collections.map((collection) => {
+            return { label: collection.title, value: collection.title };
+          })}
           selected={collection || []}
           onChange={handleCollectionChange}
         />
@@ -252,7 +255,7 @@ const Products = () => {
     const key = "collection";
     appliedFilters.push({
       key,
-      label: disambiguateLabel(key, status),
+      label: disambiguateLabel(key, collection),
       onRemove: handleCollectionRemove,
     });
   }
@@ -262,7 +265,7 @@ const Products = () => {
       <div style={{ marginBottom: "10px" }}>
         <Stack distribution="equalSpacing">
           {paginationMarkup}
-          <Button primary onClick={() => refreshProducts()}>
+          <Button icon={RefreshMajor} primary onClick={() => refreshProducts()}>
             Refresh products
           </Button>
         </Stack>
