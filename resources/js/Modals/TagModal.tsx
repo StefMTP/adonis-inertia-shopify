@@ -1,5 +1,17 @@
-import { Badge, Heading, List, Modal, TextContainer } from "@shopify/polaris";
+import {
+  Badge,
+  Heading,
+  List,
+  Modal,
+  ResourceItem,
+  ResourceList,
+  Spinner,
+  Stack,
+  TextContainer,
+  TextStyle,
+} from "@shopify/polaris";
 import React, { useState, useCallback, useContext } from "react";
+import { product } from "../../../app/Helpers/ShopifyTypes";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { getTagProducts } from "../Helpers/actions";
 
@@ -13,7 +25,7 @@ const TagModal = ({
   toggleActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { redirectUri, appCredentials } = useContext(AppCredentialsContext);
-  const [tagProducts, setTagProducts] = useState([]);
+  const [tagProducts, setTagProducts] = useState<string[]>([]);
   const handleClick = useCallback(() => {
     setTagProducts([]);
     toggleActive(!active);
@@ -32,12 +44,20 @@ const TagModal = ({
     >
       <Modal.Section>
         <Heading>Products that have this tag:</Heading>
-        <List type="number">
-          {tagProducts.length > 0 &&
-            tagProducts.map((product) => (
-              <List.Item key={`${product}-{tag}`}>{product}</List.Item>
-            ))}
-        </List>
+        <ResourceList
+          items={tagProducts}
+          resourceName={{ singular: "product", plural: "products" }}
+          renderItem={(product) => {
+            return (
+              <ResourceItem id={product} onClick={() => {}}>
+                <h3>
+                  <TextStyle variation="strong">{product}</TextStyle>
+                </h3>
+              </ResourceItem>
+            );
+          }}
+          loading={!tagProducts.length}
+        />
       </Modal.Section>
     </Modal>
   );

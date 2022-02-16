@@ -106,6 +106,7 @@ const ProductModal = ({
             </Layout.Section>
             <Layout.Section>
               <TextField
+                disabled={editingTagInProgress}
                 label={"Tag input"}
                 labelHidden
                 placeholder={"Tag input"}
