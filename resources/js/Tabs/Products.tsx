@@ -317,19 +317,21 @@ const Products = () => {
                 <h3>
                   <TextStyle variation="strong">{title}</TextStyle>
                 </h3>
-                {product_type && <Badge status="info">{product_type}</Badge>}
+                <Badge status={product_type ? "info" : "attention"}>
+                  {product_type || "No product type"}
+                </Badge>
               </Stack>
-              {body_html && <p>{body_html}</p>}
               <Caption>
                 Created at: {new Date(created_at).toLocaleDateString()}
               </Caption>
               <Button
+                size="slim"
                 onClick={() => {
                   setModalProduct(product);
                   setProductModalActive(true);
                 }}
               >
-                Edit product tags
+                Edit product
               </Button>
             </ResourceItem>
           );
