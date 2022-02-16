@@ -43,6 +43,7 @@ Route.group(() => {
     Route.get("/totalVariants", "ProductsController.totalVariantsCount");
     Route.get("/tags", "ProductsController.allShopProductTags");
     Route.get("tagProducts", "ProductsController.tagProducts");
+    Route.get("collection", "ProductsController.collectionProducts");
     Route.post("/editTag", "ProductsController.editTag");
     Route.get("/:productId", "ProductsController.showProduct");
   }).prefix("/products");

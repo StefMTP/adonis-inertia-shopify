@@ -226,7 +226,38 @@ export default class ProductsController {
           collections(first: 250) {
             edges {
               node {
+                id
                 title
+              }
+            }
+          }
+        }`,
+        })
+      );
+      return response.status(200).json(res);
+    } catch (err) {
+      console.log(err.message || err);
+      return response.status(500).json({ message: err.message || err });
+    }
+  }
+
+  public async collectionProducts({ request, response }: HttpContextContract) {
+    const shop: Shop = request.body().shop;
+    const collectionId = request.qs().collection_id;
+    try {
+      const res = await createGraphQLClient(
+        shop.shopifyDomain,
+        shop.accessToken
+      ).then((client) =>
+        client.query({
+          data: `{
+          collection(id: "${collectionId}") {
+            products(first: 250) {
+              edges {
+                node {
+                  id
+                  title
+                }
               }
             }
           }

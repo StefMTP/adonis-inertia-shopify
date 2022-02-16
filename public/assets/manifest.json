@@ -3,5 +3,9 @@
   "assets/app.js": "http://localhost:8080/assets/app.js",
   "assets/resources_js_Pages_Index_tsx.js": "http://localhost:8080/assets/resources_js_Pages_Index_tsx.js",
   "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-b2c5f2.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-b2c5f2.css",
-  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-b2c5f2.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-b2c5f2.js"
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-b2c5f2.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-b2c5f2.js",
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-5cdd45.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-5cdd45.css",
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-5cdd45.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-5cdd45.js",
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-0c7b6e.css": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-0c7b6e.css",
+  "assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-0c7b6e.js": "http://localhost:8080/assets/vendors-node_modules_shopify_app-bridge-utils_index_js-node_modules_shopify_app-bridge_action-0c7b6e.js"
 }

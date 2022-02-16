@@ -2,7 +2,6 @@ import axios from "axios";
 import { ClientApplication } from "@shopify/app-bridge";
 import { getSessionToken } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
-import { product } from "./../../../app/Helpers/ShopifyTypes";
 
 export const getAppCredentials = async (redirectUri: string, shop: string) => {
   const res = await axios.get(`${redirectUri}/credentials?shop=${shop}`);
@@ -199,6 +198,22 @@ export const getCollections = async (
   const res = await axios.get(`${redirectUri}/shop/collections`, {
     headers: { Authorization: `Bearer ${sessionToken}` },
   });
+
+  return res;
+};
+
+export const getCollectionProducts = async (
+  redirectUri: string,
+  app: ClientApplication<any>,
+  collectionId: string
+) => {
+  const sessionToken = await getSessionToken(app);
+  const res = await axios.get(
+    `${redirectUri}/shop/products/collection?collection_id=${collectionId}`,
+    {
+      headers: { Authorization: `Bearer ${sessionToken}` },
+    }
+  );
 
   return res;
 };
