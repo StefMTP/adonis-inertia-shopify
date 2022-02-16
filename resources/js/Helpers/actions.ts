@@ -190,3 +190,15 @@ export const getAllShopProductTypes = async (
 
   return res;
 };
+
+export const getCollections = async (
+  redirectUri: string,
+  app: ClientApplication<any>
+) => {
+  const sessionToken = await getSessionToken(app);
+  const res = await axios.get(`${redirectUri}/shop/collections`, {
+    headers: { Authorization: `Bearer ${sessionToken}` },
+  });
+
+  return res;
+};

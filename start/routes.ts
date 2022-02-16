@@ -35,6 +35,8 @@ Route.get("/credentials", "ShopifyAppController.credentials");
 Route.get("/settings", "ShopifyAppController.settings");
 
 Route.group(() => {
+  Route.get("/productTypes", "ProductsController.allShopProductTypes");
+  Route.get("/collections", "ProductsController.allShopCollections");
   Route.group(() => {
     Route.get("/", "ProductsController.productPage");
     Route.get("/count", "ProductsController.productsCount");
@@ -44,7 +46,6 @@ Route.group(() => {
     Route.post("/editTag", "ProductsController.editTag");
     Route.get("/:productId", "ProductsController.showProduct");
   }).prefix("/products");
-  Route.get("/productTypes", "ProductsController.allShopProductTypes");
 })
   .prefix("/shop")
   .middleware("verifySessionToken");
