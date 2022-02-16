@@ -4,6 +4,7 @@ import SkeletonCards from "../Components/SkeletonCards";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import { getTotalVariantsCount } from "../Helpers/actions";
+import CollectionModal from "../Modals/CollectionModal";
 import TagModal from "../Modals/TagModal";
 
 const Stats = () => {
@@ -17,7 +18,9 @@ const Stats = () => {
     totalProductsCount,
   } = useContext(ProductsContext);
   const [selectedTag, setSelectedTag] = useState("");
+  const [selectedCollection, setSelectedCollection] = useState<any>({});
   const [tagModalActive, setTagModalActive] = useState(false);
+  const [collectionModalActive, setCollectionModalActive] = useState(false);
 
   useEffect(() => {
     getTotalVariantsCount(redirectUri, appCredentials.app).then((res) => {
@@ -58,16 +61,19 @@ const Stats = () => {
               </Card.Section>
               <Card.Section title="Collections">
                 <Stack spacing="loose">
-                  {collections.map((collection, index) => (
+                  {collections.map((collection) => (
                     <div
-                      key={collection + index}
-                      onClick={() => {}}
+                      key={collection.id}
+                      onClick={() => {
+                        setSelectedCollection(collection);
+                        setCollectionModalActive(true);
+                      }}
                       style={{ cursor: "pointer" }}
                     >
                       <Badge>
-                        {collection.length > 12
-                          ? collection.substring(0, 12) + "..."
-                          : collection}
+                        {collection.title.length > 12
+                          ? collection.title.substring(0, 12) + "..."
+                          : collection.title}
                       </Badge>
                     </div>
                   ))}
@@ -138,6 +144,12 @@ const Stats = () => {
         tag={selectedTag}
         active={tagModalActive}
         toggleActive={setTagModalActive}
+      />
+      <CollectionModal
+        collectionId={selectedCollection.id}
+        collectionTitle={selectedCollection.title}
+        active={collectionModalActive}
+        toggleActive={setCollectionModalActive}
       />
     </Card.Subsection>
   );
