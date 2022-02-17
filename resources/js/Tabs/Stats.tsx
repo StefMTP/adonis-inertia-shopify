@@ -1,4 +1,4 @@
-import { Badge, Card, Layout, Stack, TextStyle } from "@shopify/polaris";
+import { Card, Layout, Stack, Tag, TextStyle } from "@shopify/polaris";
 import React, { useContext, useEffect, useState } from "react";
 import SkeletonCards from "../Components/SkeletonCards";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
@@ -55,27 +55,24 @@ const Stats = () => {
               <Card.Section title="Product Types">
                 <Stack spacing="loose">
                   {productTypes.map((productType, index) => (
-                    <Badge key={productType + index}>{productType}</Badge>
+                    <Tag key={productType + index}>{productType}</Tag>
                   ))}
                 </Stack>
               </Card.Section>
               <Card.Section title="Collections">
                 <Stack spacing="loose">
                   {collections.map((collection) => (
-                    <div
+                    <Tag
                       key={collection.id}
                       onClick={() => {
                         setSelectedCollection(collection);
                         setCollectionModalActive(true);
                       }}
-                      style={{ cursor: "pointer" }}
                     >
-                      <Badge>
-                        {collection.title.length > 12
-                          ? collection.title.substring(0, 12) + "..."
-                          : collection.title}
-                      </Badge>
-                    </div>
+                      {collection.title.length > 12
+                        ? collection.title.substring(0, 12) + "..."
+                        : collection.title}
+                    </Tag>
                   ))}
                 </Stack>
               </Card.Section>
@@ -98,7 +95,7 @@ const Stats = () => {
                   {totalVariantsCount} total variants for store products
                 </TextStyle>
               </Card.Section>
-              <Card.Section></Card.Section>
+              <Card.Section title="Options"></Card.Section>
             </Card>
           </Layout.Section>
           <Layout.Section oneThird>
@@ -121,16 +118,15 @@ const Stats = () => {
               <Card.Section>
                 <Stack spacing="loose">
                   {productsTags.map((tag, index) => (
-                    <div
+                    <Tag
+                      key={`${tag}-${index}`}
                       onClick={() => {
                         setSelectedTag(tag);
                         setTagModalActive(true);
                       }}
-                      key={`${tag}-${index}`}
-                      style={{ cursor: "pointer" }}
                     >
-                      <Badge>{tag}</Badge>
-                    </div>
+                      {tag}
+                    </Tag>
                   ))}
                 </Stack>
               </Card.Section>
