@@ -8,6 +8,7 @@ import {
   getTotalVariantsCount,
 } from "../Helpers/actions";
 import CollectionModal from "../Modals/CollectionModal";
+import OptionModal from "../Modals/OptionModal";
 import TagModal from "../Modals/TagModal";
 
 const Stats = () => {
@@ -24,8 +25,14 @@ const Stats = () => {
   } = useContext(ProductsContext);
   const [selectedTag, setSelectedTag] = useState("");
   const [selectedCollection, setSelectedCollection] = useState<any>({});
+  const [selectedOption, setSelectedOption] = useState<{
+    name: string;
+    values: string[];
+  }>({ name: "", values: [] });
+
   const [tagModalActive, setTagModalActive] = useState(false);
   const [collectionModalActive, setCollectionModalActive] = useState(false);
+  const [optionModalActive, setOptionModalActive] = useState(false);
 
   useEffect(() => {
     getTotalVariantsCount(redirectUri, appCredentials.app).then((res) => {
@@ -33,7 +40,6 @@ const Stats = () => {
     });
     getAllProductsOptions(redirectUri, appCredentials.app).then((res) => {
       setProductsOptions(res.data.allOptions);
-      console.log(res.data.allOptions);
     });
   }, []);
   return (
@@ -108,7 +114,18 @@ const Stats = () => {
               <Card.Section title="Options">
                 <Stack spacing="loose">
                   {Object.keys(productsOptions).map((option, index) => (
-                    <Tag key={option + index}>{option}</Tag>
+                    <Tag
+                      key={option + index}
+                      onClick={() => {
+                        setSelectedOption({
+                          name: option,
+                          values: productsOptions[option],
+                        });
+                        setOptionModalActive(true);
+                      }}
+                    >
+                      {option}
+                    </Tag>
                   ))}
                 </Stack>
               </Card.Section>
@@ -162,6 +179,11 @@ const Stats = () => {
         collectionTitle={selectedCollection.title}
         active={collectionModalActive}
         toggleActive={setCollectionModalActive}
+      />
+      <OptionModal
+        option={selectedOption}
+        active={optionModalActive}
+        toggleActive={setOptionModalActive}
       />
     </Card.Subsection>
   );
