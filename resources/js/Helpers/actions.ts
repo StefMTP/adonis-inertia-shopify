@@ -105,6 +105,22 @@ export const getTotalVariantsCount = async (
   return res;
 };
 
+export const getAllProductsOptions = async (
+  redirectUri: string,
+  app: ClientApplication<any>
+) => {
+  const sessionToken = await getSessionToken(app);
+  const res = await axios.get(`${redirectUri}/shop/products/allOptions`, {
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+  if (res.data.redirect) {
+    Redirect.create(app).dispatch(Redirect.Action.REMOTE, res.data.redirect);
+  }
+  return res;
+};
+
 export const addTagToProduct = async (
   redirectUri: string,
   app: ClientApplication<any>,

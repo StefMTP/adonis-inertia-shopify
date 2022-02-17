@@ -41,6 +41,7 @@ Route.group(() => {
     Route.get("/", "ProductsController.productPage");
     Route.get("/count", "ProductsController.productsCount");
     Route.get("/totalVariants", "ProductsController.totalVariantsCount");
+    Route.get("/allOptions", "ProductsController.allProductOptions");
     Route.get("/tags", "ProductsController.allShopProductTags");
     Route.get("tagProducts", "ProductsController.tagProducts");
     Route.get("collection", "ProductsController.collectionProducts");

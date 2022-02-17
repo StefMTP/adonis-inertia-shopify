@@ -11,6 +11,7 @@ import {
   getProducts,
   getProductsCount,
   getCollections,
+  getAllProductsOptions,
 } from "../Helpers/actions";
 import { product } from "./../../../app/Helpers/ShopifyTypes";
 import { AppCredentialsContext } from "./AppCredentialsContext";
@@ -30,6 +31,7 @@ type ProductsContextType = {
   productsCount: number;
   totalProductsCount: number;
   totalVariantsCount: number;
+  productsOptions: { [name: string]: string[] };
   productsTags: [];
   productTypes: [];
   collections: { id: string; title: string }[];
@@ -41,6 +43,7 @@ type ProductsContextType = {
   setProductsCount: React.Dispatch<React.SetStateAction<number>>;
   setTotalProductsCount: React.Dispatch<React.SetStateAction<number>>;
   setTotalVariantsCount: React.Dispatch<React.SetStateAction<number>>;
+  setProductsOptions: React.Dispatch<React.SetStateAction<{}>>;
   setProductsTags: React.Dispatch<React.SetStateAction<[]>>;
   setProductTypes: React.Dispatch<React.SetStateAction<[]>>;
   setCollections: React.Dispatch<
@@ -57,6 +60,7 @@ const productsDefaultValue: ProductsContextType = {
   productsCount: 0,
   totalProductsCount: 0,
   totalVariantsCount: 0,
+  productsOptions: {},
   productsTags: [],
   productTypes: [],
   collections: [],
@@ -71,6 +75,7 @@ const productsDefaultValue: ProductsContextType = {
   setProductsTags: () => {},
   setProductTypes: () => {},
   setCollections: () => {},
+  setProductsOptions: () => {},
 };
 
 export const ProductsContext = createContext(productsDefaultValue);
@@ -94,6 +99,9 @@ const ProductsProvider = ({
   );
   const [totalVariantsCount, setTotalVariantsCount] = useState(
     productsDefaultValue.totalVariantsCount
+  );
+  const [productsOptions, setProductsOptions] = useState(
+    productsDefaultValue.productsOptions
   );
   const [productsTags, setProductsTags] = useState(
     productsDefaultValue.productsTags
@@ -161,6 +169,7 @@ const ProductsProvider = ({
         productsCount,
         totalProductsCount,
         totalVariantsCount,
+        productsOptions,
         productsTags,
         productTypes,
         collections,
@@ -172,6 +181,7 @@ const ProductsProvider = ({
         setProductsCount,
         setTotalProductsCount,
         setTotalVariantsCount,
+        setProductsOptions,
         setProductsTags,
         setProductTypes,
         setCollections,

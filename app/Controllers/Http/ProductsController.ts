@@ -112,6 +112,35 @@ export default class ProductsController {
     }
   }
 
+  public async allProductOptions({ request, response }: HttpContextContract) {
+    const shop: Shop = request.body().shop;
+    try {
+      const allOptions = {};
+      await createRestClient(shop.shopifyDomain, shop.accessToken)
+        .then((client) => getAllProducts(client))
+        .then((products: product[]) => {
+          products
+            .reduce((prevOptions, currentProduct) => {
+              return [...prevOptions, ...currentProduct.options];
+            }, [])
+            .forEach((option) => {
+              if (!!allOptions[option.name]) {
+                allOptions[option.name] = Array.from(
+                  new Set([...allOptions[option.name], ...option.values])
+                );
+              } else {
+                allOptions[option.name] = option.values;
+              }
+            });
+        });
+
+      return response.status(200).json({ allOptions });
+    } catch (err) {
+      console.log(err.message || err);
+      return response.status(500).json({ message: err.message || err });
+    }
+  }
+
   public async tagProducts({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
     const tag = request.qs().tag;

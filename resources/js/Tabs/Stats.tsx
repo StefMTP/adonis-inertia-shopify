@@ -3,7 +3,10 @@ import React, { useContext, useEffect, useState } from "react";
 import SkeletonCards from "../Components/SkeletonCards";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
-import { getTotalVariantsCount } from "../Helpers/actions";
+import {
+  getAllProductsOptions,
+  getTotalVariantsCount,
+} from "../Helpers/actions";
 import CollectionModal from "../Modals/CollectionModal";
 import TagModal from "../Modals/TagModal";
 
@@ -12,10 +15,12 @@ const Stats = () => {
   const {
     productTypes,
     productsTags,
+    productsOptions,
     collections,
+    totalProductsCount,
     totalVariantsCount,
     setTotalVariantsCount,
-    totalProductsCount,
+    setProductsOptions,
   } = useContext(ProductsContext);
   const [selectedTag, setSelectedTag] = useState("");
   const [selectedCollection, setSelectedCollection] = useState<any>({});
@@ -26,6 +31,10 @@ const Stats = () => {
     getTotalVariantsCount(redirectUri, appCredentials.app).then((res) => {
       setTotalVariantsCount(res.data.totalVariantsCount);
     });
+    getAllProductsOptions(redirectUri, appCredentials.app).then((res) => {
+      setProductsOptions(res.data.allOptions);
+      console.log(res.data.allOptions);
+    });
   }, []);
   return (
     <Card.Subsection>
@@ -33,6 +42,7 @@ const Stats = () => {
       totalProductsCount &&
       productsTags &&
       productTypes &&
+      productsOptions &&
       collections ? (
         <Layout>
           <Layout.Section oneThird>
@@ -95,7 +105,13 @@ const Stats = () => {
                   {totalVariantsCount} total variants for store products
                 </TextStyle>
               </Card.Section>
-              <Card.Section title="Options"></Card.Section>
+              <Card.Section title="Options">
+                <Stack spacing="loose">
+                  {Object.keys(productsOptions).map((option, index) => (
+                    <Tag key={option + index}>{option}</Tag>
+                  ))}
+                </Stack>
+              </Card.Section>
             </Card>
           </Layout.Section>
           <Layout.Section oneThird>
