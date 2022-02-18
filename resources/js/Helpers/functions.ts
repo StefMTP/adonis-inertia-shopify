@@ -18,3 +18,7 @@ export const disambiguateLabel = (key, value) => {
       return value;
   }
 };
+
+export const getIdfromGid = (value: string): string => {
+  return value.split("/")[value.split("/").length - 1];
+};
