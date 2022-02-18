@@ -6,6 +6,7 @@ import { ProductsContext } from "../Contexts/ProductsContext";
 import {
   getAllProductsOptions,
   getAllShopProductTags,
+  getAllShopProductTypes,
   getTotalVariantsCount,
 } from "../Helpers/actions";
 import CollectionModal from "../Modals/CollectionModal";
@@ -24,6 +25,7 @@ const Stats = () => {
     setTotalVariantsCount,
     setProductsOptions,
     setProductsTags,
+    setProductTypes,
   } = useContext(ProductsContext);
   const [selectedTag, setSelectedTag] = useState("");
   const [selectedCollection, setSelectedCollection] = useState<any>({});
@@ -39,6 +41,11 @@ const Stats = () => {
   useEffect(() => {
     getTotalVariantsCount(redirectUri, appCredentials.app).then((res) => {
       setTotalVariantsCount(res.data.totalVariantsCount);
+    });
+    getAllShopProductTypes(redirectUri, appCredentials.app).then((res) => {
+      setProductTypes(
+        res.data.body.data.shop.productTypes.edges.map((edge) => edge.node)
+      );
     });
     getAllProductsOptions(redirectUri, appCredentials.app).then((res) => {
       setProductsOptions(res.data.allOptions);

@@ -1,13 +1,5 @@
-import React, {
-  createContext,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
-  getAllShopProductTags,
-  getAllShopProductTypes,
   getProducts,
   getProductsCount,
   getCollections,
@@ -122,11 +114,6 @@ const ProductsProvider = ({
       getProductsCount(redirectUri, appBridgeClient).then((res) => {
         setProductsCount(res.data.body.count);
         setTotalProductsCount(res.data.body.count);
-      });
-      getAllShopProductTypes(redirectUri, appBridgeClient).then((res) => {
-        setProductTypes(
-          res.data.body.data.shop.productTypes.edges.map((edge) => edge.node)
-        );
       });
       getCollections(redirectUri, appBridgeClient).then((res) => {
         setCollections(
