@@ -1,19 +1,15 @@
+import { Redirect } from "@shopify/app-bridge/actions";
 import {
-  Badge,
   Heading,
-  List,
   Modal,
   ResourceItem,
   ResourceList,
-  Spinner,
-  Stack,
-  TextContainer,
   TextStyle,
 } from "@shopify/polaris";
 import React, { useState, useCallback, useContext } from "react";
-import { product } from "../../../app/Helpers/ShopifyTypes";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { getTagProducts } from "../Helpers/actions";
+import RemoveTagDialog from "./RemoveTagDialog";
 
 const TagModal = ({
   tag,
@@ -24,23 +20,41 @@ const TagModal = ({
   active: boolean;
   toggleActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { redirectUri, appCredentials } = useContext(AppCredentialsContext);
-  const [tagProducts, setTagProducts] = useState<string[]>([]);
+  const { shop, redirectUri, appCredentials } = useContext(
+    AppCredentialsContext
+  );
+  const [tagProducts, setTagProducts] = useState<
+    { id: string; title: string; tags: string }[]
+  >([]);
   const handleClick = useCallback(() => {
     setTagProducts([]);
     toggleActive(!active);
   }, [active]);
 
+  const [removeTagDialogActive, setRemoveTagDialogActive] = useState(false);
+
   return (
-    <Modal
-      open={active}
-      onTransitionEnd={() => {
-        getTagProducts(redirectUri, appCredentials.app, tag).then((res) =>
-          setTagProducts(res.data.productNames)
-        );
-      }}
-      onClose={handleClick}
-      title={tag}
+    <>
+      <Modal
+        open={active}
+        onTransitionEnd={() => {
+          getTagProducts(redirectUri, appCredentials.app, tag).then((res) =>
+            setTagProducts(res.data.products)
+          );
+        }}
+        onClose={handleClick}
+        title={tag}
+        primaryAction={{
+          content: "Remove tag",
+          onAction: () => setRemoveTagDialogActive(true),
+        }}
+      >
+        <Modal.Section>
+          <Heading>Products that have this tag:</Heading>
+          <ResourceList
+            items={tagProducts}
+            resourceName={{ singular: "product", plural: "products" }}
+            renderItem={(product) => {
               return (
                 <ResourceItem
                   id={product.id}
@@ -51,15 +65,23 @@ const TagModal = ({
                     );
                   }}
                 >
-                  <TextStyle variation="strong">{product}</TextStyle>
-                </h3>
-              </ResourceItem>
-            );
-          }}
-          loading={!tagProducts.length}
-        />
-      </Modal.Section>
-    </Modal>
+                  <h3>
+                    <TextStyle variation="strong">{product.title}</TextStyle>
+                  </h3>
+                </ResourceItem>
+              );
+            }}
+            loading={!tagProducts.length}
+          />
+        </Modal.Section>
+      </Modal>
+      <RemoveTagDialog
+        tag={tag}
+        products={tagProducts}
+        active={removeTagDialogActive}
+        toggleActive={setRemoveTagDialogActive}
+      />
+    </>
   );
 };
 
