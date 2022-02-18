@@ -22,13 +22,18 @@ const OptionModal = ({
     toggleActive(!active);
   }, [active]);
   return (
-    <Modal open={active} onClose={handleClick} title={option.name}>
+    <Modal
+      open={active}
+      onClose={handleClick}
+      title={option.name}
+      onTransitionEnd={() => setOptionValues(option.values)}
+    >
       <Modal.Section>
         <Heading>
           Values found in your store for the option "{option.name}":
         </Heading>
         <ResourceList
-          items={option.values}
+          items={optionValues}
           resourceName={{ singular: "option", plural: "options" }}
           renderItem={(value) => {
             return (
