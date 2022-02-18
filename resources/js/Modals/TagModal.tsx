@@ -41,16 +41,16 @@ const TagModal = ({
       }}
       onClose={handleClick}
       title={tag}
-    >
-      <Modal.Section>
-        <Heading>Products that have this tag:</Heading>
-        <ResourceList
-          items={tagProducts}
-          resourceName={{ singular: "product", plural: "products" }}
-          renderItem={(product) => {
-            return (
-              <ResourceItem id={product} onClick={() => {}}>
-                <h3>
+              return (
+                <ResourceItem
+                  id={product.id}
+                  onClick={() => {
+                    Redirect.create(appCredentials.app).dispatch(
+                      Redirect.Action.REMOTE,
+                      `https://${shop}/admin/products/${product.id}`
+                    );
+                  }}
+                >
                   <TextStyle variation="strong">{product}</TextStyle>
                 </h3>
               </ResourceItem>

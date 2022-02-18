@@ -9,6 +9,8 @@ import {
 } from "@shopify/polaris";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { getCollectionProducts } from "../Helpers/actions";
+import { Redirect } from "@shopify/app-bridge/actions";
+import { getIdfromGid } from "../Helpers/functions";
 
 const CollectionModal = ({
   collectionId,
@@ -21,7 +23,9 @@ const CollectionModal = ({
   active: boolean;
   toggleActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { redirectUri, appCredentials } = useContext(AppCredentialsContext);
+  const { shop, redirectUri, appCredentials } = useContext(
+    AppCredentialsContext
+  );
   const [collectionProducts, setCollectionProducts] = useState([]);
   const handleClick = useCallback(() => {
     setCollectionProducts([]);
@@ -47,13 +51,21 @@ const CollectionModal = ({
       title={collectionTitle}
     >
       <Modal.Section>
-        <Heading>Products that belong to this collection</Heading>
+        <Heading>Products that belong to this collection:</Heading>
         <ResourceList
           items={collectionProducts}
           renderItem={(product) => {
             const { id, title } = product;
             return (
-              <ResourceItem id={id} onClick={() => {}}>
+              <ResourceItem
+                id={id}
+                onClick={() => {
+                  Redirect.create(appCredentials.app).dispatch(
+                    Redirect.Action.REMOTE,
+                    `https://${shop}/admin/products/${getIdfromGid(id)}`
+                  );
+                }}
+              >
                 <h3>
                   <TextStyle variation="strong">{title}</TextStyle>
                 </h3>
