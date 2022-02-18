@@ -5,6 +5,7 @@ import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
 import {
   getAllProductsOptions,
+  getAllShopProductTags,
   getTotalVariantsCount,
 } from "../Helpers/actions";
 import CollectionModal from "../Modals/CollectionModal";
@@ -22,6 +23,7 @@ const Stats = () => {
     totalVariantsCount,
     setTotalVariantsCount,
     setProductsOptions,
+    setProductsTags,
   } = useContext(ProductsContext);
   const [selectedTag, setSelectedTag] = useState("");
   const [selectedCollection, setSelectedCollection] = useState<any>({});
@@ -40,6 +42,14 @@ const Stats = () => {
     });
     getAllProductsOptions(redirectUri, appCredentials.app).then((res) => {
       setProductsOptions(res.data.allOptions);
+    });
+    getAllShopProductTags(redirectUri, appCredentials.app).then((res) => {
+      setProductsTags(
+        res.data.body.data.shop.productTags.edges.map((edge) => edge.node)
+      );
+      console.log(
+        res.data.body.data.shop.productTags.edges.map((edge) => edge.node)
+      );
     });
   }, []);
   return (
