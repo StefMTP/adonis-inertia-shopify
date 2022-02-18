@@ -12,6 +12,7 @@ type AppCredentialsContextType = {
   appCredentials: appCredentials;
   setAppCredentials: React.Dispatch<React.SetStateAction<appCredentials>>;
   redirectUri: string;
+  shop: any;
 };
 
 export type appCredentials = {
@@ -28,6 +29,7 @@ const appCredentialsDefaultValue: AppCredentialsContextType = {
   },
   setAppCredentials: () => {},
   redirectUri: "",
+  shop: "",
 };
 
 export const AppCredentialsContext = createContext(appCredentialsDefaultValue);
@@ -55,7 +57,7 @@ const AppCredentialsProvider = ({
 
   return (
     <AppCredentialsContext.Provider
-      value={{ appCredentials, redirectUri, setAppCredentials }}
+      value={{ appCredentials, shop, redirectUri, setAppCredentials }}
     >
       {children}
     </AppCredentialsContext.Provider>
