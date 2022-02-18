@@ -158,7 +158,11 @@ export default class ProductsController {
           return products
             .filter((product) => product.tags.includes(tag))
             .map((product) => {
-              return { id: product.id, title: product.title };
+              return {
+                id: product.id,
+                title: product.title,
+                tags: product.tags,
+              };
             });
         });
       return response.status(200).json({ products });
