@@ -227,32 +227,6 @@ export default class ProductsController {
     }
   }
 
-  // public async allShopProductTags({ request, response }: HttpContextContract) {
-  //   const shop: Shop = request.body().shop;
-  //   try {
-  //     const res = await createGraphQLClient(
-  //       shop.shopifyDomain,
-  //       shop.accessToken
-  //     ).then((client) =>
-  //       client.query({
-  //         data: `{
-  //         shop {
-  //           productTags (first: 250) {
-  //             edges {
-  //                 node
-  //             }
-  //           }
-  //         }
-  //       }`,
-  //       })
-  //     );
-  //     return response.status(200).json(res);
-  //   } catch (err) {
-  //     console.log(err.message || err);
-  //     return response.status(500).json({ message: err.message || err });
-  //   }
-  // }
-
   public async allShopProductTags({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
     try {
