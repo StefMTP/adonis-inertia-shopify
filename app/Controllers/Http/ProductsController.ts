@@ -119,15 +119,19 @@ export default class ProductsController {
       await createRestClient(shop.shopifyDomain, shop.accessToken)
         .then((client) => getAllProducts(client))
         .then((products: product[]) => {
+          // get the options of all products
           products
             .reduce((prevOptions, currentProduct) => {
               return [...prevOptions, ...currentProduct.options];
             }, [])
+            // iterate through them and add them to the allOptions object as a key (option name)-value(option values) pair
             .forEach((option) => {
+              // if the the same option name is found, just add the distinct values to the value of the same key value pair
               if (!!allOptions[option.name]) {
                 allOptions[option.name] = Array.from(
                   new Set([...allOptions[option.name], ...option.values])
                 );
+                // else just add a new key value pair to allOptions
               } else {
                 allOptions[option.name] = option.values;
               }
