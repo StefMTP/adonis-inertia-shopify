@@ -149,7 +149,7 @@ export default class ProductsController {
     const shop: Shop = request.body().shop;
     const tag = request.qs().tag;
     try {
-      const productNames = await createRestClient(
+      const products = await createRestClient(
         shop.shopifyDomain,
         shop.accessToken
       )
@@ -157,9 +157,11 @@ export default class ProductsController {
         .then((products: product[]) => {
           return products
             .filter((product) => product.tags.includes(tag))
-            .map((product) => product.title);
+            .map((product) => {
+              return { id: product.id, title: product.title };
+            });
         });
-      return response.status(200).json({ productNames });
+      return response.status(200).json({ products });
     } catch (err) {
       console.log(err.message || err);
       return response.status(500).json({ message: err.message || err });
