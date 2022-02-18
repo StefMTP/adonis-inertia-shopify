@@ -11,7 +11,6 @@ import {
   getProducts,
   getProductsCount,
   getCollections,
-  getAllProductsOptions,
 } from "../Helpers/actions";
 import { product } from "./../../../app/Helpers/ShopifyTypes";
 import { AppCredentialsContext } from "./AppCredentialsContext";
@@ -123,11 +122,6 @@ const ProductsProvider = ({
       getProductsCount(redirectUri, appBridgeClient).then((res) => {
         setProductsCount(res.data.body.count);
         setTotalProductsCount(res.data.body.count);
-      });
-      getAllShopProductTags(redirectUri, appBridgeClient).then((res) => {
-        setProductsTags(
-          res.data.body.data.shop.productTags.edges.map((edge) => edge.node)
-        );
       });
       getAllShopProductTypes(redirectUri, appBridgeClient).then((res) => {
         setProductTypes(
