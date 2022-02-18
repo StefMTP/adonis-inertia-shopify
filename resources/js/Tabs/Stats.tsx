@@ -44,12 +44,7 @@ const Stats = () => {
       setProductsOptions(res.data.allOptions);
     });
     getAllShopProductTags(redirectUri, appCredentials.app).then((res) => {
-      setProductsTags(
-        res.data.body.data.shop.productTags.edges.map((edge) => edge.node)
-      );
-      console.log(
-        res.data.body.data.shop.productTags.edges.map((edge) => edge.node)
-      );
+      setProductsTags(res.data);
     });
   }, []);
   return (
