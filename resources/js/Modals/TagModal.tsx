@@ -80,6 +80,7 @@ const TagModal = ({
         products={tagProducts}
         active={removeTagDialogActive}
         toggleActive={setRemoveTagDialogActive}
+        toggleTagModalActive={toggleActive}
       />
     </>
   );

@@ -1,40 +1,64 @@
 import { Heading, Modal, TextContainer } from "@shopify/polaris";
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
-import { deleteTagFromProduct, getProduct } from "../Helpers/actions";
+import { ProductsContext } from "../Contexts/ProductsContext";
+import {
+  deleteTagFromProduct,
+  getAllShopProductTags,
+  getProduct,
+  getTagProducts,
+} from "../Helpers/actions";
 
 const RemoveTagDialog = ({
   tag,
   products,
   active,
   toggleActive,
+  toggleTagModalActive,
 }: {
   tag: string;
   products: { id: string; title: string; tags: string }[];
   active: boolean;
   toggleActive: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleTagModalActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { redirectUri, appCredentials } = useContext(AppCredentialsContext);
+  const { setProductsTags } = useContext(ProductsContext);
   const handleClick = useCallback(() => {
     toggleActive(!active);
   }, [active]);
+  const [removingTags, setRemovingTags] = useState(false);
   return (
     <Modal
       title={`Remove ${tag}`}
       open={active}
       onClose={handleClick}
       primaryAction={{
+        loading: removingTags,
         content: "Remove",
         onAction: () => {
-          for (const product of products) {
-            deleteTagFromProduct(
-              redirectUri,
-              appCredentials.app,
-              product.tags,
-              product.id,
-              tag
-            ).then((res) => console.log(res));
-          }
+          setRemovingTags(true);
+          const allPromisedRemoves = Promise.allSettled(
+            products.map(async (product) => {
+              await deleteTagFromProduct(
+                redirectUri,
+                appCredentials.app,
+                product.tags,
+                product.id,
+                tag
+              );
+            })
+          );
+          allPromisedRemoves.then(() => {
+            getAllShopProductTags(redirectUri, appCredentials.app).then(
+              (res) => {
+                setProductsTags(res.data);
+                setRemovingTags(false);
+                toggleActive(false);
+                toggleTagModalActive(false);
+              }
+            );
+          });
         },
         destructive: true,
       }}
