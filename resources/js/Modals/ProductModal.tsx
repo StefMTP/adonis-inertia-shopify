@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Layout,
   Modal,
@@ -29,7 +30,6 @@ const ProductModal = ({
   active: boolean;
   toggleActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [tagInput, setTagInput] = useState("");
   const [editingTagInProgress, setEditingTagInProgress] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastError, setToastError] = useState(false);
@@ -38,13 +38,69 @@ const ProductModal = ({
 
   const { appCredentials, redirectUri } = useContext(AppCredentialsContext);
   const { pageLimit } = useContext(SettingsContext);
-  const { setProducts } = useContext(ProductsContext);
+  const { setProducts, productTypes } = useContext(ProductsContext);
+
+  const [tagInput, setTagInput] = useState("");
+  const [productTypeInput, setProductTypeInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    setOptions(
+      productTypes.map((type) => {
+        return { value: type, label: type };
+      })
+    );
+  }, [productTypes]);
 
   const handleClick = useCallback(() => toggleActive(!active), [active]);
   const handleChange = useCallback((newValue) => setTagInput(newValue), []);
   const toggleIsToastActive = useCallback(
     () => setIsToastActive((prevState) => !prevState),
     []
+  );
+  const updateText = useCallback(
+    (value) => {
+      setProductTypeInput(value);
+
+      if (!loading) {
+        setLoading(true);
+      }
+
+      setTimeout(() => {
+        if (value === "") {
+          setOptions(
+            productTypes.map((type) => {
+              return { value: type, label: type };
+            })
+          );
+          setLoading(false);
+          return;
+        }
+        const filterRegex = new RegExp(value, "i");
+        const resultOptions = options.filter((option) =>
+          option.label.match(filterRegex)
+        );
+        setOptions(resultOptions);
+        setLoading(false);
+      }, 300);
+    },
+    [productTypes, loading, options]
+  );
+
+  const updateSelection = useCallback(
+    (selected) => {
+      const selectedText = selected.map((selectedItem) => {
+        const matchedOption = options.find((option) => {
+          return option.value.match(selectedItem);
+        });
+        return matchedOption && matchedOption.label;
+      });
+      setSelectedOptions(selected);
+      setProductTypeInput(selectedText[0]);
+    },
+    [options]
   );
 
   return (
@@ -162,6 +218,22 @@ const ProductModal = ({
                   >
                     Add tag
                   </Button>
+                }
+              />
+            </Layout.Section>
+            <Layout.Section>
+              <Autocomplete
+                onSelect={updateSelection}
+                options={options}
+                selected={selectedOptions}
+                textField={
+                  <Autocomplete.TextField
+                    label="product_types"
+                    value={productTypeInput}
+                    onChange={updateText}
+                    placeholder="Change product type..."
+                    autoComplete="off"
+                  />
                 }
               />
             </Layout.Section>

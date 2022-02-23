@@ -3,6 +3,7 @@ import {
   getProducts,
   getProductsCount,
   getCollections,
+  getAllShopProductTypes,
 } from "../Helpers/actions";
 import { product } from "./../../../app/Helpers/ShopifyTypes";
 import { AppCredentialsContext } from "./AppCredentialsContext";
@@ -24,7 +25,7 @@ type ProductsContextType = {
   totalVariantsCount: number;
   productsOptions: { [name: string]: string[] };
   productsTags: [];
-  productTypes: [];
+  productTypes: string[];
   collections: { id: string; title: string }[];
   setProducts: React.Dispatch<React.SetStateAction<product[]>>;
   setProductsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -120,6 +121,11 @@ const ProductsProvider = ({
           res.data.body.data.collections.edges.map((edge) => {
             return { id: edge.node.id, title: edge.node.title };
           })
+        );
+      });
+      getAllShopProductTypes(redirectUri, appBridgeClient).then((res) => {
+        setProductTypes(
+          res.data.body.data.shop.productTypes.edges.map((edge) => edge.node)
         );
       });
       getProducts(redirectUri, appBridgeClient, pageLimit).then((res) => {
