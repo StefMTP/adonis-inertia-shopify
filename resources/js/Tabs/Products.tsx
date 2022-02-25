@@ -39,6 +39,7 @@ const Products = () => {
     setProducts,
     setProductsLoading,
     setNextPage,
+    setCurrentPage,
     setPrevPage,
     setPageNumber,
     setProductsCount,
@@ -141,6 +142,7 @@ const Products = () => {
 
   const getProductPage = (page: any, increment: number) => {
     setProductsLoading(true);
+    setCurrentPage(page);
     getProducts(
       redirectUri,
       appCredentials.app,
@@ -314,7 +316,7 @@ const Products = () => {
             <ResourceItem
               id={id}
               media={media}
-              onClick={() => setSelectedItems([...selectedItems, id])}
+              onClick={() => {} /* setSelectedItems([...selectedItems, id]) */}
             >
               <Stack alignment="center">
                 <h3>
@@ -345,6 +347,7 @@ const Products = () => {
         product={modalProduct}
         active={productModalActive}
         toggleActive={setProductModalActive}
+        pageRefresher={getProductPage}
       />
       <BulkAddTagModal
         selectedProducts={selectedProducts}

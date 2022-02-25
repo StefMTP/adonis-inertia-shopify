@@ -18,6 +18,7 @@ type ProductsContextType = {
   products: product[];
   productsLoading: boolean;
   prevPage: any;
+  currentPage: any;
   nextPage: any;
   pageNumber: number;
   productsCount: number;
@@ -30,6 +31,7 @@ type ProductsContextType = {
   setProducts: React.Dispatch<React.SetStateAction<product[]>>;
   setProductsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setPrevPage: React.Dispatch<React.SetStateAction<any>>;
+  setCurrentPage: React.Dispatch<React.SetStateAction<any>>;
   setNextPage: React.Dispatch<React.SetStateAction<any>>;
   setPageNumber: React.Dispatch<React.SetStateAction<number>>;
   setProductsCount: React.Dispatch<React.SetStateAction<number>>;
@@ -47,6 +49,7 @@ const productsDefaultValue: ProductsContextType = {
   products: [],
   productsLoading: false,
   prevPage: "",
+  currentPage: "",
   nextPage: "",
   pageNumber: 1,
   productsCount: 0,
@@ -59,6 +62,7 @@ const productsDefaultValue: ProductsContextType = {
   setProducts: () => {},
   setProductsLoading: () => {},
   setPrevPage: () => {},
+  setCurrentPage: () => {},
   setNextPage: () => {},
   setPageNumber: () => {},
   setProductsCount: () => {},
@@ -81,6 +85,9 @@ const ProductsProvider = ({
     productsDefaultValue.productsLoading
   );
   const [nextPage, setNextPage] = useState(productsDefaultValue.nextPage);
+  const [currentPage, setCurrentPage] = useState(
+    productsDefaultValue.currentPage
+  );
   const [prevPage, setPrevPage] = useState(productsDefaultValue.prevPage);
   const [pageNumber, setPageNumber] = useState(productsDefaultValue.pageNumber);
   const [productsCount, setProductsCount] = useState(
@@ -151,6 +158,7 @@ const ProductsProvider = ({
         products,
         productsLoading,
         nextPage,
+        currentPage,
         prevPage,
         pageNumber,
         productsCount,
@@ -163,6 +171,7 @@ const ProductsProvider = ({
         setProducts,
         setProductsLoading,
         setNextPage,
+        setCurrentPage,
         setPrevPage,
         setPageNumber,
         setProductsCount,
