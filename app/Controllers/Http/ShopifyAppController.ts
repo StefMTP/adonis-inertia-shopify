@@ -9,7 +9,7 @@ import {
   getShop,
 } from "App/Helpers/ShopifyHelpers";
 import Shop from "App/Models/Shop";
-import Shopify from "@shopify/shopify-api";
+import Shopify, { DataType } from "@shopify/shopify-api";
 
 export default class ShopifyAppController {
   public async app({
@@ -40,7 +40,8 @@ export default class ShopifyAppController {
         });
       }
       // save the scopes and the state value for the next step of the OAuth
-      const initialScopes: string = "read_products,write_products";
+      const initialScopes: string =
+        "read_products,write_products,write_shipping";
       const state: string = nanoid();
       const cache = {
         scopes: initialScopes,
@@ -91,6 +92,19 @@ export default class ShopifyAppController {
           "app/uninstalled",
           client
         );
+        // create carrier service for the shop and app
+        const carrierRes = await client.post({
+          path: "carrier_services",
+          data: {
+            carrier_service: {
+              name: "Carrier Test Service",
+              callback_url: `${Env.get("REDIRECT_URI")}/carrier_callback`,
+              service_discovery: true,
+            },
+          },
+          type: DataType.JSON,
+        });
+        console.log({ carrierRes });
         // retrieve shop details from the REST API and store them in our database
         const shopifyShop = await getShop(client);
         shop = await Shop.updateOrCreate(
@@ -177,5 +191,10 @@ export default class ShopifyAppController {
         message: err,
       });
     }
+  }
+
+  public async carrierCallback({ request, response }: HttpContextContract) {
+    console.log(request.body());
+    return response.status(200).json({});
   }
 }

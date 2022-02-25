@@ -33,6 +33,7 @@ Route.post("/uninstall", "ShopifyAppController.uninstall").middleware(
 
 Route.get("/credentials", "ShopifyAppController.credentials");
 Route.get("/settings", "ShopifyAppController.settings");
+Route.post("/carrier_callback", "ShopifyAppController.carrierCallback");
 
 Route.group(() => {
   Route.get("/productTypes", "ProductsController.allShopProductTypes");
@@ -46,6 +47,7 @@ Route.group(() => {
     Route.get("tagProducts", "ProductsController.tagProducts");
     Route.get("collection", "ProductsController.collectionProducts");
     Route.post("/editTag", "ProductsController.editTag");
+    Route.post("/editProductType", "ProductsController.editProductType");
     Route.get("/:productId", "ProductsController.showProduct");
   }).prefix("/products");
 })
