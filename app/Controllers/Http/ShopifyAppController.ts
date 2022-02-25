@@ -196,7 +196,10 @@ export default class ShopifyAppController {
 
   public async carrierCallback({ request, response }: HttpContextContract) {
     console.log(request.body());
-    // const res = await axios.get('https://maps.googleapis.com/maps/api/geocode/json?address=5%20Pavlou%20Mela%20Pefki&key=AIzaSyD17r8N_7G38gk3n8NxixKbTKFNuMK0PoU');
+    const res = await axios.get(
+      "https://maps.googleapis.com/maps/api/geocode/json?address=5%20Pavlou%20Mela%20Pefki&key=" +
+        Env.get("GOOGLE_KEY")
+    );
     // console.log(res.data.results[0].geometry.location.lat);
     // console.log(res.data.results[0].geometry.location.lng);
     return response.status(200).json({
