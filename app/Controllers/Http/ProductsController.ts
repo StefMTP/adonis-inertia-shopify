@@ -183,18 +183,51 @@ export default class ProductsController {
       if (!productId || !tagInput) {
         throw new Error("Missing parameters from body");
       }
-      const client = new Shopify.Clients.Rest(
+      const res: any = await createRestClient(
         shop.shopifyDomain,
         shop.accessToken
-      );
-      const res: any = await client.put({
-        path: "products/" + productId,
-        data: {
-          product: { id: productId, tags: tagInput },
-        },
-        type: DataType.JSON,
+      ).then((client) => {
+        return client.put({
+          path: "products/" + productId,
+          data: {
+            product: { id: productId, tags: tagInput },
+          },
+          type: DataType.JSON,
+        });
       });
       return response.status(200).json({ newTags: res.body.product.tags });
+    } catch (err) {
+      console.log(err.message || err);
+      return response.status(500).json({ message: err.message || err });
+    }
+  }
+
+  public async editProductType({ request, response }: HttpContextContract) {
+    const shop: Shop = request.body().shop;
+    const productId = request.body().id;
+    const productTypeInput = request.body().product_type;
+    try {
+      if (!shop || shop.isNotProperlyInstalled) {
+        throw new Error("Shop doesn't exist or isn't installed");
+      }
+      if (!productId || !productTypeInput) {
+        throw new Error("Missing parameters from body");
+      }
+      const res: any = await createRestClient(
+        shop.shopifyDomain,
+        shop.accessToken
+      ).then((client) => {
+        return client.put({
+          path: "products/" + productId,
+          data: {
+            product: { id: productId, product_type: productTypeInput },
+          },
+          type: DataType.JSON,
+        });
+      });
+      return response
+        .status(200)
+        .json({ newProductType: res.body.product.product_type });
     } catch (err) {
       console.log(err.message || err);
       return response.status(500).json({ message: err.message || err });

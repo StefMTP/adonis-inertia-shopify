@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Badge,
   Button,
   Layout,
   Modal,
@@ -9,6 +10,7 @@ import {
   TextStyle,
   Toast,
 } from "@shopify/polaris";
+// import { CirclePlusMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
@@ -16,6 +18,7 @@ import { SettingsContext } from "../Contexts/SettingsContext";
 import {
   addTagToProduct,
   deleteTagFromProduct,
+  editProductType,
   getProduct,
   getProducts,
 } from "../Helpers/actions";
@@ -25,11 +28,14 @@ const ProductModal = ({
   product,
   active,
   toggleActive,
+  pageRefresher,
 }: {
   product: product;
   active: boolean;
   toggleActive: React.Dispatch<React.SetStateAction<boolean>>;
+  pageRefresher: (page: any, increment: number) => void;
 }) => {
+  const [tagInput, setTagInput] = useState("");
   const [editingTagInProgress, setEditingTagInProgress] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastError, setToastError] = useState(false);
@@ -38,21 +44,15 @@ const ProductModal = ({
 
   const { appCredentials, redirectUri } = useContext(AppCredentialsContext);
   const { pageLimit } = useContext(SettingsContext);
-  const { setProducts, productTypes } = useContext(ProductsContext);
+  const { setProducts, productTypes, setProductsLoading, currentPage } =
+    useContext(ProductsContext);
 
-  const [tagInput, setTagInput] = useState("");
   const [productTypeInput, setProductTypeInput] = useState("");
+  const [editingTypeInProgress, setEditingTypeInProgress] = useState(false);
+  const [productType, setProductType] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [options, setOptions] = useState([]);
-
-  useEffect(() => {
-    setOptions(
-      productTypes.map((type) => {
-        return { value: type, label: type };
-      })
-    );
-  }, [productTypes]);
 
   const handleClick = useCallback(() => toggleActive(!active), [active]);
   const handleChange = useCallback((newValue) => setTagInput(newValue), []);
@@ -104,13 +104,33 @@ const ProductModal = ({
   );
 
   return (
-    <div>
+    <>
       <Modal
         open={active}
         onClose={handleClick}
-        title={product.title}
+        title={
+          <div>
+            {product.title}
+            <Badge status={productType ? "info" : "attention"}>
+              {productType || "No product type"}
+            </Badge>
+          </div>
+        }
         large
-        onTransitionEnd={() => setProductTags(product.tags)}
+        onTransitionEnd={() => {
+          setOptions(
+            productTypes.map((type) => {
+              return { value: type, label: type };
+            })
+          );
+          setProductTags(product.tags);
+          getProduct(redirectUri, appCredentials.app, product.id, [
+            "product_type",
+          ]).then((res) => {
+            setProductType(res.data.body.product.product_type);
+            setProductTypeInput(res.data.body.product.product_type);
+          });
+        }}
       >
         <Modal.Section>
           <Layout>
@@ -131,22 +151,15 @@ const ProductModal = ({
                           product.id,
                           tag
                         ).then(() => {
-                          getProducts(
-                            redirectUri,
-                            appCredentials.app,
-                            pageLimit
-                          ).then((res) => {
-                            setProducts(res.data.body.products);
-                            setEditingTagInProgress(false);
-                            setToastMessage("Product tag removed");
-                            toggleIsToastActive();
-                          });
                           getProduct(
                             redirectUri,
                             appCredentials.app,
                             product.id,
                             ["tags"]
                           ).then((res) => {
+                            setEditingTagInProgress(false);
+                            setToastMessage("Product tag removed");
+                            toggleIsToastActive();
                             setProductTags(res.data.body.product.tags);
                           });
                         });
@@ -192,18 +205,14 @@ const ProductModal = ({
                           setToastMessage(res.message);
                           toggleIsToastActive();
                         } else {
-                          getProducts(
-                            redirectUri,
-                            appCredentials.app,
-                            pageLimit
-                          ).then((res) => {
-                            setProducts(res.data.body.products);
-                            setTagInput("");
-                            setToastError(false);
-                            setEditingTagInProgress(false);
-                            setToastMessage("Product tag added");
-                            toggleIsToastActive();
-                          });
+                          // getProducts(
+                          //   redirectUri,
+                          //   appCredentials.app,
+                          //   pageLimit
+                          // ).then((res) => {
+                          //   setProducts(res.data.body.products);
+
+                          // });
                           getProduct(
                             redirectUri,
                             appCredentials.app,
@@ -211,6 +220,11 @@ const ProductModal = ({
                             ["tags"]
                           ).then((res) => {
                             setProductTags(res.data.body.product.tags);
+                            setTagInput("");
+                            setToastError(false);
+                            setEditingTagInProgress(false);
+                            setToastMessage("Product tag added");
+                            toggleIsToastActive();
                           });
                         }
                       });
@@ -222,20 +236,59 @@ const ProductModal = ({
               />
             </Layout.Section>
             <Layout.Section>
-              <Autocomplete
-                onSelect={updateSelection}
-                options={options}
-                selected={selectedOptions}
-                textField={
-                  <Autocomplete.TextField
-                    label="product_types"
-                    value={productTypeInput}
-                    onChange={updateText}
-                    placeholder="Change product type..."
-                    autoComplete="off"
-                  />
-                }
-              />
+              <Stack alignment="center">
+                <Autocomplete
+                  // actionBefore={
+                  //   options.length <= 0 && {
+                  //     content: `Add product type ${productTypeInput}`,
+                  //     icon: CirclePlusMinor,
+                  //     onAction: () => console.log(options),
+                  //   }
+                  // }
+                  onSelect={updateSelection}
+                  options={options}
+                  selected={selectedOptions}
+                  textField={
+                    <Autocomplete.TextField
+                      label=""
+                      value={productTypeInput}
+                      onChange={updateText}
+                      placeholder="Change product type..."
+                      autoComplete="off"
+                    />
+                  }
+                />
+                <Button
+                  loading={editingTypeInProgress}
+                  onClick={() => {
+                    setEditingTypeInProgress(true);
+                    setProductsLoading(true);
+                    editProductType(
+                      redirectUri,
+                      appCredentials.app,
+                      product.id,
+                      productTypeInput
+                    )
+                      .then((res) => {
+                        setProductType(res.data.newProductType);
+                        getProducts(
+                          redirectUri,
+                          appCredentials.app,
+                          pageLimit
+                        ).then((res) => {
+                          setProducts(res.data.body.products);
+                          setEditingTypeInProgress(false);
+                          setProductsLoading(false);
+                        });
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }}
+                >
+                  Edit product type
+                </Button>
+              </Stack>
             </Layout.Section>
           </Layout>
         </Modal.Section>
@@ -248,7 +301,7 @@ const ProductModal = ({
           duration={4000}
         />
       ) : null}
-    </div>
+    </>
   );
 };
 

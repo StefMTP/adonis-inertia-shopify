@@ -121,6 +121,24 @@ export const getAllProductsOptions = async (
   return res;
 };
 
+export const editProductType = async (
+  redirectUri: string,
+  app: ClientApplication<any>,
+  productId: string,
+  productType: string
+) => {
+  const sessionToken = await getSessionToken(app);
+  const res = await axios.post(
+    `${redirectUri}/shop/products/editProductType`,
+    {
+      id: productId,
+      product_type: productType,
+    },
+    { headers: { Authorization: `Bearer ${sessionToken}` } }
+  );
+  return res;
+};
+
 export const addTagToProduct = async (
   redirectUri: string,
   app: ClientApplication<any>,
