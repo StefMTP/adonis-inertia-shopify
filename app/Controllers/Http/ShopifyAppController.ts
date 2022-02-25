@@ -10,6 +10,7 @@ import {
 } from "App/Helpers/ShopifyHelpers";
 import Shop from "App/Models/Shop";
 import Shopify, { DataType } from "@shopify/shopify-api";
+import axios from "axios";
 
 export default class ShopifyAppController {
   public async app({
@@ -195,6 +196,33 @@ export default class ShopifyAppController {
 
   public async carrierCallback({ request, response }: HttpContextContract) {
     console.log(request.body());
-    return response.status(200).json({});
+    // const res = await axios.get('https://maps.googleapis.com/maps/api/geocode/json?address=5%20Pavlou%20Mela%20Pefki&key=AIzaSyD17r8N_7G38gk3n8NxixKbTKFNuMK0PoU');
+    // console.log(res.data.results[0].geometry.location.lat);
+    // console.log(res.data.results[0].geometry.location.lng);
+    return response.status(200).json({
+      rates: [
+        {
+          service_name: "Box Now",
+          description: "Fragkoklisias 23",
+          service_code: "ab1234",
+          currency: "EUR",
+          total_price: "350",
+        },
+        {
+          service_name: "Box Now 2",
+          description: "Cockoras 56",
+          service_code: "ab1235",
+          currency: "EUR",
+          total_price: "350",
+        },
+        {
+          service_name: "Box Now 3",
+          description: "Leforos Alvanias 125",
+          service_code: "ab1236",
+          currency: "EUR",
+          total_price: "350",
+        },
+      ],
+    });
   }
 }
