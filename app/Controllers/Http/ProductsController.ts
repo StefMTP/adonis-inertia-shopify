@@ -1,6 +1,6 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Shop from "App/Models/Shop";
-import Shopify, { DataType } from "@shopify/shopify-api";
+import { DataType } from "@shopify/shopify-api";
 import {
   createGraphQLClient,
   createRestClient,
@@ -237,22 +237,17 @@ export default class ProductsController {
   public async allShopProductTypes({ request, response }: HttpContextContract) {
     const shop: Shop = request.body().shop;
     try {
-      const res = await createGraphQLClient(
-        shop.shopifyDomain,
-        shop.accessToken
-      ).then((client) =>
-        client.query({
-          data: `{
-          shop {
-            productTypes (first: 250) {
-              edges {
-                  node
-              }
-            }
-          }
-        }`,
-        })
-      );
+      const res = await createRestClient(shop.shopifyDomain, shop.accessToken)
+        .then((client) => getAllProducts(client))
+        .then((products: product[]) => {
+          return Array.from(
+            new Set(
+              products
+                .map((product) => product.product_type)
+                .filter((productType) => productType !== "")
+            )
+          );
+        });
       return response.status(200).json(res);
     } catch (err) {
       console.log(err.message || err);

@@ -131,9 +131,7 @@ const ProductsProvider = ({
         );
       });
       getAllShopProductTypes(redirectUri, appBridgeClient).then((res) => {
-        setProductTypes(
-          res.data.body.data.shop.productTypes.edges.map((edge) => edge.node)
-        );
+        setProductTypes(res.data);
       });
       getProducts(redirectUri, appBridgeClient, pageLimit).then((res) => {
         try {
