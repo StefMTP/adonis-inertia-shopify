@@ -140,7 +140,7 @@ const Products = () => {
     });
   };
 
-  const getProductPage = (page: any, increment: number) => {
+  const getProductPage = async (page: any, increment: number) => {
     setProductsLoading(true);
     setCurrentPage(page);
     getProducts(
@@ -162,6 +162,7 @@ const Products = () => {
       }
       setPageNumber((currentNumber) => currentNumber + increment);
       setProductsLoading(false);
+      return page;
     });
   };
 
@@ -313,11 +314,7 @@ const Products = () => {
             />
           );
           return (
-            <ResourceItem
-              id={id}
-              media={media}
-              onClick={() => {} /* setSelectedItems([...selectedItems, id]) */}
-            >
+            <ResourceItem id={id} media={media} onClick={() => {}}>
               <Stack alignment="center">
                 <h3>
                   <TextStyle variation="strong">{title}</TextStyle>

@@ -4,23 +4,23 @@ import {
   Button,
   Layout,
   Modal,
+  Spinner,
   Stack,
   Tag,
   TextField,
   TextStyle,
   Toast,
 } from "@shopify/polaris";
-// import { CirclePlusMinor } from "@shopify/polaris-icons";
+import { CirclePlusMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AppCredentialsContext } from "../Contexts/AppCredentialsContext";
 import { ProductsContext } from "../Contexts/ProductsContext";
-import { SettingsContext } from "../Contexts/SettingsContext";
 import {
   addTagToProduct,
   deleteTagFromProduct,
   editProductType,
+  getAllShopProductTypes,
   getProduct,
-  getProducts,
 } from "../Helpers/actions";
 import { product } from "./../../../app/Helpers/ShopifyTypes";
 
@@ -33,7 +33,7 @@ const ProductModal = ({
   product: product;
   active: boolean;
   toggleActive: React.Dispatch<React.SetStateAction<boolean>>;
-  pageRefresher: (page: any, increment: number) => void;
+  pageRefresher: (page: any, increment: number) => any;
 }) => {
   const [tagInput, setTagInput] = useState("");
   const [editingTagInProgress, setEditingTagInProgress] = useState(false);
@@ -43,8 +43,7 @@ const ProductModal = ({
   const [productTags, setProductTags] = useState("");
 
   const { appCredentials, redirectUri } = useContext(AppCredentialsContext);
-  const { pageLimit } = useContext(SettingsContext);
-  const { setProducts, productTypes, setProductsLoading, currentPage } =
+  const { productTypes, setProductTypes, setProductsLoading, currentPage } =
     useContext(ProductsContext);
 
   const [productTypeInput, setProductTypeInput] = useState("");
@@ -103,6 +102,40 @@ const ProductModal = ({
     [options]
   );
 
+  const updateProductType = () => {
+    if (productTypeInput !== productType) {
+      setEditingTypeInProgress(true);
+      setProductsLoading(true);
+      editProductType(
+        redirectUri,
+        appCredentials.app,
+        product.id,
+        productTypeInput
+      )
+        .then((res) => {
+          setProductType(res.data.newProductType);
+          pageRefresher(currentPage, 0).then(() => {
+            // maybe update getAllShopProductTypes
+            getAllShopProductTypes(redirectUri, appCredentials.app).then(
+              (res) => {
+                setProductTypes(res.data);
+                setOptions(
+                  res.data.map((type) => {
+                    return { value: type, label: type };
+                  })
+                );
+                setEditingTypeInProgress(false);
+                setProductsLoading(false);
+              }
+            );
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   return (
     <>
       <Modal
@@ -123,10 +156,11 @@ const ProductModal = ({
               return { value: type, label: type };
             })
           );
-          setProductTags(product.tags);
           getProduct(redirectUri, appCredentials.app, product.id, [
             "product_type",
+            "tags",
           ]).then((res) => {
+            setProductTags(res.data.body.product.tags);
             setProductType(res.data.body.product.product_type);
             setProductTypeInput(res.data.body.product.product_type);
           });
@@ -205,14 +239,6 @@ const ProductModal = ({
                           setToastMessage(res.message);
                           toggleIsToastActive();
                         } else {
-                          // getProducts(
-                          //   redirectUri,
-                          //   appCredentials.app,
-                          //   pageLimit
-                          // ).then((res) => {
-                          //   setProducts(res.data.body.products);
-
-                          // });
                           getProduct(
                             redirectUri,
                             appCredentials.app,
@@ -238,53 +264,35 @@ const ProductModal = ({
             <Layout.Section>
               <Stack alignment="center">
                 <Autocomplete
-                  // actionBefore={
-                  //   options.length <= 0 && {
-                  //     content: `Add product type ${productTypeInput}`,
-                  //     icon: CirclePlusMinor,
-                  //     onAction: () => console.log(options),
-                  //   }
-                  // }
+                  actionBefore={
+                    options.length <= 0 && {
+                      content: `Add product type ${productTypeInput}`,
+                      icon: CirclePlusMinor,
+                      onAction: () => updateProductType(),
+                    }
+                  }
                   onSelect={updateSelection}
                   options={options}
                   selected={selectedOptions}
                   textField={
-                    <Autocomplete.TextField
-                      label=""
-                      value={productTypeInput}
-                      onChange={updateText}
-                      placeholder="Change product type..."
-                      autoComplete="off"
-                    />
+                    productType && product && productTypes ? (
+                      <Autocomplete.TextField
+                        label=""
+                        value={productTypeInput}
+                        onChange={updateText}
+                        placeholder="Change product type..."
+                        autoComplete="off"
+                      />
+                    ) : (
+                      <Spinner size="small" />
+                    )
                   }
                 />
+                )
                 <Button
+                  disabled={productTypeInput === productType}
                   loading={editingTypeInProgress}
-                  onClick={() => {
-                    setEditingTypeInProgress(true);
-                    setProductsLoading(true);
-                    editProductType(
-                      redirectUri,
-                      appCredentials.app,
-                      product.id,
-                      productTypeInput
-                    )
-                      .then((res) => {
-                        setProductType(res.data.newProductType);
-                        getProducts(
-                          redirectUri,
-                          appCredentials.app,
-                          pageLimit
-                        ).then((res) => {
-                          setProducts(res.data.body.products);
-                          setEditingTypeInProgress(false);
-                          setProductsLoading(false);
-                        });
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                      });
-                  }}
+                  onClick={() => updateProductType()}
                 >
                   Edit product type
                 </Button>
